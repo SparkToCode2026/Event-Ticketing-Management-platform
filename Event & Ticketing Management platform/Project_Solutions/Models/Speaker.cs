@@ -7,6 +7,7 @@ namespace Project_Solutions.Models
 {
     public class Speaker
     {
+        
         [Key]
         public int SpeakerId { get; set; }
         
