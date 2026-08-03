@@ -4,6 +4,8 @@ namespace Project_Solutions.Models
     public class Promotion
     {
         [Key]
+        
+        
         public int PromotionID { get; set; }
         
         public string PromotionCode { get; set; }
