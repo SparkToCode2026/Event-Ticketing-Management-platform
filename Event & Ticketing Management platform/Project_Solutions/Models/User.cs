@@ -5,10 +5,10 @@ namespace Project_Solutions.Models
     public class User
     {
         [Key]
-        public int Id { get; set; }
+        public int UserId { get; set; }
 
         [Required, MaxLength(100)]
-        public string Name { get; set; }
+        public string UserName { get; set; }
 
         [Required, EmailAddress, MaxLength(150)]
         public string Email { get; set; }
@@ -17,11 +17,8 @@ namespace Project_Solutions.Models
         public string PasswordHash { get; set; }
 
         [Required, MaxLength(20)]
-        public string Role { get; set; } // "Attendee", "Organizer", or "Admin"
+        public string Role { get; set; }
 
-        // Navigation properties (relationships to other models)
-        public OrganizerProfile OrganizerProfile { get; set; }
-        public ICollection<Order> Orders { get; set; }
-        public ICollection<Review> Reviews { get; set; }
+        public OrganizerProfile? OrganizerProfile { get; set; }
     }
 }
