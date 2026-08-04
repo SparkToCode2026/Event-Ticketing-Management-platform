@@ -23,7 +23,10 @@ namespace Project_Solutions.Controllers
         public async Task<IActionResult> Update(int id, User updatedUser)
         {
             var user = await _context.Users.FindAsync(id);
-            if (user == null) return NotFound();
+            if (user == null)
+            {
+                return NotFound();
+            }
 
             user.UserName = updatedUser.UserName;
             user.Email = updatedUser.Email;
@@ -38,7 +41,10 @@ namespace Project_Solutions.Controllers
         public async Task<IActionResult> UpdateRole(int id, string newRole)
         {
             var user = await _context.Users.FindAsync(id);
-            if (user == null) return NotFound();
+            if (user == null)
+            { 
+               return NotFound(); 
+            }
 
             user.Role = newRole;
             await _context.SaveChangesAsync();
@@ -51,7 +57,11 @@ namespace Project_Solutions.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var user = await _context.Users.FindAsync(id);
-            if (user == null) return NotFound();
+            if (user == null)
+            {
+                return NotFound();
+            }
+            
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
@@ -63,9 +73,7 @@ namespace Project_Solutions.Controllers
         [Authorize]
         public async Task<IActionResult> GetAll()
         {
-            var users = await _context.Users
-                .Include(u => u.OrganizerProfile)
-                .ToListAsync();
+            var users = await _context.Users.Include(u => u.OrganizerProfile).ToListAsync();
             return Ok(users);
         }
 
@@ -74,9 +82,7 @@ namespace Project_Solutions.Controllers
         [Authorize]
         public async Task<IActionResult> GetById(int id)
         {
-            var user = await _context.Users
-                .Include(u => u.OrganizerProfile)
-                .FirstOrDefaultAsync(u => u.UserId == id);
+            var user = await _context.Users.Include(u => u.OrganizerProfile).FirstOrDefaultAsync(u => u.UserId == id);
 
             if (user == null) return NotFound();
             return Ok(user);
@@ -87,9 +93,7 @@ namespace Project_Solutions.Controllers
         [Authorize]
         public async Task<IActionResult> GetByRole(string role)
         {
-            var users = await _context.Users
-                .Where(u => u.Role == role)
-                .ToListAsync();
+            var users = await _context.Users.Where(u => u.Role == role).ToListAsync();
             return Ok(users);
         }
 
@@ -98,10 +102,8 @@ namespace Project_Solutions.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetRoleCounts()
         {
-            var counts = await _context.Users
-                .GroupBy(u => u.Role)
-                .Select(g => new { Role = g.Key, Count = g.Count() })
-                .ToListAsync();
+            var counts = await _context.Users.GroupBy(u => u.Role).Select(g => new { Role = g.Key, Count = g.Count() }).ToListAsync();
+
             return Ok(counts);
         }
     }
