@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Project_Solutions.Models
 {
     public class User
     {
         [Key]
+        [JsonIgnore]
         public int UserId { get; set; }
 
         [Required, MaxLength(100)]
@@ -18,10 +20,14 @@ namespace Project_Solutions.Models
 
         [Required, MaxLength(20)]
         public string Role { get; set; }
-
+        
+        [JsonIgnore]
         public OrganizerProfile? OrganizerProfile { get; set; }
-        public List<Review> Reviews { get; set; } 
 
-        public List<Order> Orders { get; set; }
+        [JsonIgnore]
+        public List<Review>? Reviews { get; set; } 
+        
+        [JsonIgnore]
+        public List<Order>? Orders { get; set; }
     }
 }

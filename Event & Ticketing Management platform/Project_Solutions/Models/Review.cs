@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 namespace Project_Solutions.Models
 {
     public class Review
     {
         [Key]
+        [JsonIgnore]
         public int ReviewID { get; set; }
 
         [Required, Range(1, 5)]
@@ -20,6 +22,7 @@ namespace Project_Solutions.Models
         public int UserId { get; set; }
 
         [ForeignKey("UserId")]
+        [JsonIgnore]
         public User User { get; set; }
     }
 }

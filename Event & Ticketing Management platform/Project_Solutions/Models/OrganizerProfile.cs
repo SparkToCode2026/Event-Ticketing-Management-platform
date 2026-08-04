@@ -1,11 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Project_Solutions.Models
 {
     public class OrganizerProfile
     {
         [Key]
+        [JsonIgnore]
         public int OrganizerId { get; set; }
 
         [Required]
@@ -17,11 +19,9 @@ namespace Project_Solutions.Models
         [Required, MaxLength(150)]
         public string CompanyName { get; set; }
 
-        //1:M relationship with organizerProfile and events
-        [Required]
-        [ForeignKey("EventId")]
-        public int EventId { get; set; }                
 
-        public Event Event { get; set; }  // Navigation property to Event
+        //1:M relationship with OrganizerProfile and Events
+        [JsonIgnore]
+        public List<Event>? Events { get; set; }
     }
 }

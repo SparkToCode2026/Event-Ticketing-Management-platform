@@ -8,6 +8,7 @@ namespace Project_Solutions.Models
     {
         
         [Key]
+        [JsonIgnore]
         public int PaymentId { get; set; }
         
         [Required]
