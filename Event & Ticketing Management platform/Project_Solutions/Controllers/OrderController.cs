@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project_Solutions.Data;
 using Project_Solutions.Models;
@@ -17,6 +18,7 @@ namespace Project_Solutions.Controllers
 
         // POST: Order/AddOrder
         [HttpPost("AddOrder")]
+        [Authorize]
         public IActionResult AddOrder(Order order)
         {
             order.OrderDate = DateTime.Now;
@@ -35,6 +37,7 @@ namespace Project_Solutions.Controllers
 
         // PUT: Full update
         [HttpPut("UpdateOrder")]
+        [Authorize]
         public IActionResult UpdateOrder(int id, Order o)
         {
             Order order = context.Orders.FirstOrDefault(o => o.OrderId == id);
@@ -58,6 +61,7 @@ namespace Project_Solutions.Controllers
 
         // PATCH: Partial update
         [HttpPatch("UpdateOrderAmount")]
+        [Authorize]
         public IActionResult UpdateOrderAmount(int id, double newAmount)
         {
             Order order = context.Orders.FirstOrDefault(o => o.OrderId == id);
@@ -80,6 +84,7 @@ namespace Project_Solutions.Controllers
 
         // DELETE: Order/RemoveOrder
         [HttpDelete("RemoveOrder")]
+        [Authorize]
         public IActionResult RemoveOrder(int id)
         {
             Order order = context.Orders.FirstOrDefault(o => o.OrderId == id);
@@ -98,6 +103,7 @@ namespace Project_Solutions.Controllers
 
         // GET (list) includes User, Tickets and Payment
         [HttpGet("GetAllOrders")]
+        [Authorize]
         public IActionResult GetAllOrders()
         {
             List<Order> orders = context.Orders
@@ -111,6 +117,7 @@ namespace Project_Solutions.Controllers
 
         // GET by id
         [HttpGet("GetOrderById")]
+        [Authorize]
         public IActionResult GetOrderById(int id)
         {
             Order order = context.Orders
@@ -131,6 +138,7 @@ namespace Project_Solutions.Controllers
 
         // GET by user id
         [HttpGet("GetOrdersByUserId")]
+        [Authorize]
         public IActionResult GetOrdersByUserId(int userId)
         {
             List<Order> orders = context.Orders
@@ -144,6 +152,7 @@ namespace Project_Solutions.Controllers
 
         // GET revenue summary from confirmed orders
         [HttpGet("GetRevenueSummary")]
+        [Authorize]
         public IActionResult GetRevenueSummary()
         {
             List<Order> confimredOrders = context.Orders
