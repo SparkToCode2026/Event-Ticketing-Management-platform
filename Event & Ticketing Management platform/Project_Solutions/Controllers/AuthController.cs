@@ -34,8 +34,10 @@ namespace Project_Solutions.Controllers
             var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (existingUser != null)
+            {
                 return BadRequest("A user with this email already exists.");
-
+            }
+            
             var newUser = new User
             {
                 UserName = request.UserName,
