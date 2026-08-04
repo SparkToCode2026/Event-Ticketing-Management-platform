@@ -6,6 +6,7 @@ namespace Project_Solutions.Models
     public class User
     {
         [Key]
+        [JsonIgnore]
         public int UserId { get; set; }
 
         [Required, MaxLength(100)]
@@ -15,18 +16,20 @@ namespace Project_Solutions.Models
         public string Email { get; set; }
 
         [Required]
-        [JsonIgnore]
         public string PasswordHash { get; set; }
 
         [Required, MaxLength(20)]
         public string Role { get; set; }
         
+        // 1:1 a user may be an orgnizer
         [JsonIgnore]
         public OrganizerProfile? OrganizerProfile { get; set; }
 
+        // 1:M one user writes many reviews
         [JsonIgnore]
-        public List<Review>? Reviews { get; set; } 
-        
+        public List<Review>? Reviews { get; set; }
+
+        // 1:M one user places may orders
         [JsonIgnore]
         public List<Order>? Orders { get; set; }
     }

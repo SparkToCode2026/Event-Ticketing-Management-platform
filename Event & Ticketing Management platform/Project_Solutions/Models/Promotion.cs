@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 namespace Project_Solutions.Models
 {
@@ -7,20 +6,18 @@ namespace Project_Solutions.Models
     {
         [Key]
         [JsonIgnore]
-        public int PromotionID { get; set; }
-        
+        public int PromotionId { get; set; }
+        [Required, MaxLength(50)]
         public string PromotionCode { get; set; }
-        
+        [Required, MaxLength(50)]
         public string PromotionType { get; set; }
-        
+        [Required]
         public DateTime PromotionStartDate { get; set; }
-        
+        [Required]
         public DateTime PromotionExpiry { get; set; }
 
-        [Required]
-        public int OrderId { get; set; }
-        [ForeignKey("OrderId")]
+        // 1:M one promotion can be used to many orders
         [JsonIgnore]
-        public Order Order { get; set; }
+        public List<Order>? Orders { get; set; }
     }
 }

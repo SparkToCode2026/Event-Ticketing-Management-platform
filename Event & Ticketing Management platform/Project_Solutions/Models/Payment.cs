@@ -10,26 +10,20 @@ namespace Project_Solutions.Models
         [Key]
         [JsonIgnore]
         public int PaymentId { get; set; }
-        
         [Required]
         public DateTime PaymentDate { get; set; } = DateTime.Now;
-        
-        [Required]
-        public string PaymentMethod { get; set; }
-        
-        [Required]
+        [Required, MaxLength(50)]
+        public string PaymentMethod { get; set; }        
+        [Required, MaxLength(50)]
         public string PaymentStatus { get; set; }
-        
         [Required]
         public decimal  PaymentAmount { get; set; }
-        
-        // Foreign Key From Order Table (1-M)
-        [ForeignKey("Order")]
+
+        // 1:1 this payment belongs to one order
+        [Required]
         public int OrderId { get; set; }
-        
+        [ForeignKey("OrderId")]
         [JsonIgnore]
         public Order Order { get; set; }
-        
-        
     }
 }

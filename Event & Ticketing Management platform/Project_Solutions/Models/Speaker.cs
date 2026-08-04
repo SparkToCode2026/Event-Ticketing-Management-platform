@@ -11,19 +11,17 @@ namespace Project_Solutions.Models
         [Key]
         [JsonIgnore]
         public int SpeakerId { get; set; }
-        
-        [Required]
+        [Required, MaxLength(50)]
         public string SpeakerName { get; set; }
-        
+        [MaxLength(1000)]
         public string SpeakerBio { get; set; }
-        
+        [MaxLength(300)]
         public string SpeakerTopic { get; set; }
 
-        //ForeignKey  From Event Table 1-M 
+        // M:1 many speakers can speak at one event
         [Required]
-        [ForeignKey("Event")]
         public int EventId { get; set; }
-        
+        [ForeignKey("EventId")]
         [JsonIgnore]
         public Event Event { get; set; }
     }
