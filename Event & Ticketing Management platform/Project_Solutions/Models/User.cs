@@ -20,5 +20,8 @@ namespace Project_Solutions.Models
         public string Role { get; set; }
 
         public OrganizerProfile? OrganizerProfile { get; set; }
+        public List<Review> Reviews { get; set; } 
+
+        public List<Order> Orders { get; set; }
     }
 }

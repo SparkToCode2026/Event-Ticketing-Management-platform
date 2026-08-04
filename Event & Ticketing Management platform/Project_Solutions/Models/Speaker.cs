@@ -19,6 +19,7 @@ namespace Project_Solutions.Models
         public string SpeakerTopic { get; set; }
 
         //ForeignKey  From Event Table 1-M 
+        [Required]
         [ForeignKey("Event")]
         public int EventId { get; set; }
         
