@@ -29,6 +29,5 @@ namespace Project_Solutions.Models
         [JsonIgnore]
         public Order Order { get; set; }
         
-        
     }
 }
