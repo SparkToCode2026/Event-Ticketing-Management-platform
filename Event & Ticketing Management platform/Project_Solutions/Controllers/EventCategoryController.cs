@@ -24,6 +24,23 @@ namespace Project_Solutions.Controllers
             _appDbContext.SaveChanges();
         }
 
+        //2: update name and description of an existing event category
+        [HttpPut("UpdateEventCategory/{id}")]
+        public void UpdateEventCategory(int id, EventCategory updatedCategory)
+        {
+            var existingCategory = _appDbContext.EventCategories.Find(id);
+
+            if (existingCategory != null)
+            {
+                existingCategory.EventCategoryName = updatedCategory.EventCategoryName;
+                existingCategory.EventCategoryDescription = updatedCategory.EventCategoryDescription;
+
+                _appDbContext.SaveChanges();
+            }
+        }
+
+
+
 
 
     }
