@@ -84,8 +84,11 @@ namespace Project_Solutions.Controllers
         {
             var user = await _context.Users.Include(u => u.OrganizerProfile).FirstOrDefaultAsync(u => u.UserId == id);
 
-            if (user == null) return NotFound();
-            return Ok(user);
+            if (user == null)
+            {
+                return NotFound();
+            }
+                return Ok(user);
         }
 
         // Filters users by role (e.g. "Organizer")
