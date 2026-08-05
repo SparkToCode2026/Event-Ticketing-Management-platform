@@ -13,21 +13,28 @@ namespace Project_Solutions.Controllers
         {
         context = _context;
         }
-        //[HttpPost("AddPromotion")]
-        //public IActionResult AddPromotion([FromBody]Promotion promotion)
-        //{
-        //    var existingPromotion = context.Promotions
-        //        .FirstOrDefault(p => p.OrderId == promotion.OrderId);
+        [HttpPost("AddPromotion")]
+        public IActionResult AddPromotion(int orderId,[FromBody]Promotion promotion)
+        {
+         var order = context.Orders.FirstOrDefault(o => o.OrderId == orderId);
 
-        //    if (existingPromotion != null)
-        //    {
-        //     return BadRequest("This order already has a promotion.");   
-        //    }
-        //    context.Promotions.Add(promotion);
-        //    context.SaveChanges();
+         if (order == null)
+            {
+                return NotFound("Order not found.");
+            }
 
-        //    return Ok(promotion);
-        //}
+            if (order.PromotionId != null)
+            {
+                return BadRequest("This order already has a promotion.");
+            }
+            context.Promotions.Add(promotion);
+            context.SaveChanges();
+            
+            order.PromotionId = promotion.PromotionId;
+            context.SaveChanges();
+
+            return Ok(promotion);
+        }
         [HttpPut("UpdatePromotion")]
         public IActionResult UpdatePromotion(int id, [FromBody]Promotion updatedPromotion)
         {
