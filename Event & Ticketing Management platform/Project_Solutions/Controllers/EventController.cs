@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project_Solutions.Models;
-
 using Project_Solutions.Data;
 
 namespace Project_Solutions.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("Event")]
     public class EventController : ControllerBase   
     {
         private AppDbContext _appDbContext;
@@ -44,6 +43,88 @@ namespace Project_Solutions.Controllers
                 _appDbContext.SaveChanges();
             }
         }
+
+        //3: Reschedule an event
+        [HttpPatch("RescheduleEvent/{id}")]
+        public void RescheduleEvent(int id, Event updatedEvent)
+        {
+            var existingEvent = _appDbContext.Events.Find(id);
+
+            if (existingEvent != null)
+            {
+                existingEvent.EventDate = updatedEvent.EventDate;
+                existingEvent.EventStartTime = updatedEvent.EventStartTime;
+                existingEvent.EventEndTime = updatedEvent.EventEndTime;
+
+                _appDbContext.SaveChanges();
+            }
+        }
+
+
+        //4: delete an event
+        [HttpDelete("DeleteEvent/{id}")]
+        public void DeleteEvent(int id)
+        {
+            var existingEvent = _appDbContext.Events.Find(id);
+
+            if (existingEvent != null)
+            {
+                _appDbContext.Events.Remove(existingEvent);
+                _appDbContext.SaveChanges();
+            }
+        }
+
+        //5: get all events
+        [HttpGet("GetEvents")]
+        public List<Event> GetEvents()
+        {
+            return _appDbContext.Events
+                .Include(e => e.Venue)
+                .Include(e => e.Speakers)
+                .Include(e => e.EventCategory)
+                .ToList();
+        }
+
+        //6: get event by id
+        [HttpGet("GetEventById/{id}")]
+        public Event? GetEventById(int id)
+        {
+            return _appDbContext.Events
+                .Include(e => e.Venue)
+                .Include(e => e.Speakers)
+                .Include(e => e.EventCategory)
+                .Include(e => e.OrganizerProfile)
+                .Include(e => e.TicketType)
+                .Include(e => e.Reviews)
+                .FirstOrDefault(e => e.EventId == id);
+        }
+
+        //7: get upcoming events
+        [HttpGet("GetUpcomingEvents")]
+        public List<Event> GetUpcomingEvents()
+        {
+            return _appDbContext.Events
+                .Where(e => e.EventDate >= DateTime.Now)
+                .ToList();
+        }
+
+        //8: get event Summry
+        [HttpGet("GetEventSummary/{id}")]
+        public object GetEventsSummary()
+        {
+            var events = _appDbContext.Events
+                .OrderBy(e => e.EventDate)
+                .ToList();
+
+            var totalCount = _appDbContext.Events.Count();
+
+            return new
+            {
+                TotalEvents = totalCount,
+                Events = events
+            };
+        }
+
 
     }
 }
