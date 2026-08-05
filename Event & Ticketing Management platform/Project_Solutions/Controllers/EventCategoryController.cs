@@ -85,7 +85,12 @@ namespace Project_Solutions.Controllers
 
         //7: filter/search event categories by keyword
         [HttpGet("SearchEventCategories")]
-        public 
+        public List<EventCategory> SearchEventCategories(string keyword)
+        {
+            return _appDbContext.EventCategories
+                .Where(c => c.EventCategoryName.Contains(keyword) || c.EventCategoryDescription.Contains(keyword))
+                .ToList();
+        }
 
 
 
