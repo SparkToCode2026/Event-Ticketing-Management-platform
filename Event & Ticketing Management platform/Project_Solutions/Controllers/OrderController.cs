@@ -22,9 +22,9 @@ namespace Project_Solutions.Controllers
         public IActionResult AddOrder(Order order)
         {
             order.OrderDate = DateTime.Now;
-            if (string.IsNullOrEmpty(order.Orderstatus))
+            if (string.IsNullOrEmpty(order.OrderStatus))
             {
-                order.Orderstatus = "Pending";
+                order.OrderStatus = "Pending";
             }
             
             context.Orders.Add(order);
@@ -49,7 +49,7 @@ namespace Project_Solutions.Controllers
             {
                 order.TotalAmount = o.TotalAmount;
                 order.OrderDate = o.OrderDate;
-                order.Orderstatus = o.Orderstatus;
+                order.OrderStatus = o.OrderStatus;
                 order.UserId = o.UserId;
                 // promotion
 
@@ -62,7 +62,7 @@ namespace Project_Solutions.Controllers
         // PATCH: Partial update
         [HttpPatch("UpdateOrderAmount")]
         [Authorize]
-        public IActionResult UpdateOrderAmount(int id, double newAmount)
+        public IActionResult UpdateOrderAmount(int id, decimal newAmount)
         {
             Order order = context.Orders.FirstOrDefault(o => o.OrderId == id);
             if (order == null)
@@ -156,12 +156,12 @@ namespace Project_Solutions.Controllers
         public IActionResult GetRevenueSummary()
         {
             List<Order> confimredOrders = context.Orders
-                .Where(o => o.Orderstatus == "Confirmed")
+                .Where(o => o.OrderStatus == "Confirmed")
                 .ToList();
 
-            double totalRevenue = confimredOrders.Sum(o => o.TotalAmount);
+            decimal totalRevenue = confimredOrders.Sum(o => o.TotalAmount);
             int orderCount = confimredOrders.Count;
-            double averageOrder = orderCount > 0 ? totalRevenue / orderCount : 0;
+            decimal averageOrder = orderCount > 0 ? totalRevenue / orderCount : 0;
 
             List<Order> recentOrders = context.Orders
                 .OrderByDescending(o => o.OrderDate)

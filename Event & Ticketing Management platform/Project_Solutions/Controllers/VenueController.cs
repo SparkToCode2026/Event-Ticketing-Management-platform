@@ -44,14 +44,14 @@ namespace Project_Solutions.Controllers
             _context.Venues.Add(venue);
             await _context.SaveChangesAsync();
  
-            return CreatedAtAction(nameof(GetVenue), new { id = venue.Venue_Id }, venue);
+            return CreatedAtAction(nameof(GetVenue), new { id = venue.VenueId }, venue);
         }
  
         // PUT: api/Venue/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutVenue(int id, Venue venue)
         {
-            if (id != venue.Venue_Id)
+            if (id != venue.VenueId)
             {
                 return BadRequest();
             }
@@ -95,7 +95,7 @@ namespace Project_Solutions.Controllers
  
         private bool VenueExists(int id)
         {
-            return _context.Venues.Any(e => e.Venue_Id == id);
+            return _context.Venues.Any(e => e.VenueId == id);
         }
     }
 }

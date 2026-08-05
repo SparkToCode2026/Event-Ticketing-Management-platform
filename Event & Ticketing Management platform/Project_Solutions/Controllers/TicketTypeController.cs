@@ -42,7 +42,7 @@ namespace Project_Solutions.Controllers
         public async Task<ActionResult<IEnumerable<TicketType>>> GetTicketTypesByTicket(int ticketId)
         {
             var ticketTypes = await _context.TicketTypes
-                .Where(t => t.TicketId == ticketId)
+                .Where(t => t.TicketTypeId == ticketId)
                 .ToListAsync();
  
             return ticketTypes;
