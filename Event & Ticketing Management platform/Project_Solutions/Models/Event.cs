@@ -9,33 +9,48 @@ namespace Project_Solutions.Models
         [Key]
         [JsonIgnore]
         public int EventId { get; set; }
+        [Required, MaxLength(150)]
         public string EventName { get; set; }
+        [Required]
         public DateTime EventDate { get; set; }
+        [Required]
         public TimeOnly EventStartTime { get; set; }
+        [Required]
         public TimeOnly EventEndTime { get; set; }
+        [MaxLength(1000)]
         public string EventDescription { get; set; }
 
-        //1:M relationship with EventCategory and Events
-        [JsonIgnore]
-        public List<EventCategory>? EventCategories { get; set; }
-
-        //1:M relationship with OrganizerProfile and Events
+        // M:1 many events per category
         [Required]
-        public int OrganizerId { get; set; } // Foreign key to OrganizerProfile
+        public int EventCategoryId { get; set; }
+        [ForeignKey("EventCategoryId")]
+        [JsonIgnore]
+        public EventCategory EventCategory { get; set; }
+
+        // M:1 many events per organizer
+        [Required]
+        public int OrganizerId { get; set; }
         [ForeignKey("OrganizerId")]
         [JsonIgnore]
         public OrganizerProfile OrganizerProfile { get; set; }
 
-        //1:M relationship with Events and Speaker
+        // 1:M one event has many speakers
         [JsonIgnore]
         public List<Speaker>? Speakers { get; set; }
 
-        //1:M relationship with Events and Venue
+        // M:1 many events per venue
         [Required]
-        public int VenueId { get; set; } // Foreign key to Venue
+        public int VenueId { get; set; }
         [ForeignKey("VenueId")]
         [JsonIgnore]
         public Venue Venue { get; set; }
 
+        // 1:M one event has many tickets tiers
+        [JsonIgnore]
+        public List<TicketType>? TicketType { get; set; }
+
+        // 1:M one event has many reviews
+        [JsonIgnore]
+        public List<Review>? Reviews { get; set; }
     }
 }

@@ -26,17 +26,35 @@ namespace Project_Solutions.Data
                 .WithOne(o => o.User)
                 .HasForeignKey<OrganizerProfile>(o => o.UserId);
 
-            // Order (1) — Promotion (1), optional on Order's side
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Promotion)
-                .WithOne(p => p.Order)
-                .HasForeignKey<Promotion>(p => p.OrderId);
-
             // Order (1) — Payment (1), optional on Order's side
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Payment)
                 .WithOne(p => p.Order)
                 .HasForeignKey<Payment>(p => p.OrderId);
+
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.Event)
+                .WithMany(e => e.Reviews)
+                .HasForeignKey(r => r.EventId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TicketType>()
+                .HasOne(t => t.Event)
+                .WithMany(e => e.TicketType)
+                .HasForeignKey(t => t.EventId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Payment>()
+               .Property(p => p.PaymentAmount)
+               .HasPrecision(10, 2);
+
+            modelBuilder.Entity<TicketType>()
+                .Property(t => t.Price)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<Order>()
+                .Property(o => o.TotalAmount)
+                .HasPrecision(10, 2);
 
 
             base.OnModelCreating(modelBuilder);

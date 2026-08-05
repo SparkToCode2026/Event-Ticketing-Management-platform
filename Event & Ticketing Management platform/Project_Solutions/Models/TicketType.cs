@@ -10,18 +10,22 @@ namespace Project_Solutions.Models
         [JsonIgnore]
         public int TicketTypeId { get; set; }
 
-        [MaxLength(45)]
+        [Required, MaxLength(45)]
         public string Category { get; set; }
-
+        [Required]
         public decimal Price { get; set; }
-
+        [MaxLength(500)]
         public string Benefits { get; set; }
 
-        //1:M relationship with TicketType and Tickets
+        // M:1 many ticket types per event
         [Required]
-        public int TicketId { get; set; } // Foreign key to Ticket
-        [ForeignKey("TicketId")]
+        public int EventId { get; set; }
+        [ForeignKey("EventId")]
         [JsonIgnore]
-        public Ticket Ticket { get; set; }
+        public Event Event { get; set; }
+
+        // 1:M one ticket type has many tickets
+        [JsonIgnore]
+        public List<Ticket>? Tickets { get; set; }
     }
 }

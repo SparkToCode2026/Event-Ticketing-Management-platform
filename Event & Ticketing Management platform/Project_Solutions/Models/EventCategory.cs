@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace Project_Solutions.Models
@@ -9,10 +8,13 @@ namespace Project_Solutions.Models
         [Key]
         [JsonIgnore]
         public int EventCategoryId { get; set; }
+        [Required, MaxLength(100)]
         public string EventCategoryName {get; set;}
+        [MaxLength(500)]
         public string EventCategoryDescription { get; set; }
 
+        // 1:M one caregory classifies many events
         [JsonIgnore]
-        public List<Event> Events { get; set; }
+        public List<Event>? Events { get; set; }
     }
 }

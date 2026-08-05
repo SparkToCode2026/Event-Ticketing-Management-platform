@@ -9,28 +9,32 @@ namespace Project_Solutions.Models
         [Key]
         [JsonIgnore]
         public int OrderId { get; set; }
-        public double TotalAmount { get; set; }
-        public string Orderstatus { get; set; }
+        [Required]
+        public decimal TotalAmount { get; set; }
+        [Required, MaxLength(50)]
+        public string OrderStatus { get; set; }
+        [Required]
         public DateTime OrderDate { get; set; }
 
-        //1:1 relationship with Order
-        [JsonIgnore]
-        public Promotion? Promotion { get; set; }
-
-        //1:M relationship with Ticket
-        [JsonIgnore]
-        public List<Ticket>? Tickets { get; set; }
-
-        //1:1 relationship with Order
-        [JsonIgnore]
-        public Payment Payment { get; set; }
-
+        // M:1 many orders per user
         [Required]
         public int UserId { get; set; }
         [ForeignKey("UserId")]
         [JsonIgnore]
         public User User { get; set; }
 
+        // M:1 many orders can use the same  promo
+        public int? PromotionId { get; set; }
+        [ForeignKey("PromotionId")]
+        [JsonIgnore]
+        public Promotion Promotion { get; set; }
 
+        // 1:M one order contain many tickets
+        [JsonIgnore]
+        public List<Ticket>? Tickets { get; set; }
+
+        // 1:1 one order has one payment
+        [JsonIgnore]
+        public Payment? Payment { get; set; }
     }
 }
