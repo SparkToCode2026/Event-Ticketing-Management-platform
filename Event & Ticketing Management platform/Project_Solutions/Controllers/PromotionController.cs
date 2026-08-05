@@ -70,37 +70,37 @@ namespace Project_Solutions.Controllers
 
          return Ok("Promotion deleted successfully.");
         }
-        //[HttpGet("list")]
-        //public IActionResult GetPromotions()
-        //{ 
-        //  var promotions = context.Promotions
-        //  .Include(p => p.Order)
-        //  .ToList();
+        [HttpGet("list")]
+        public IActionResult GetPromotions()
+        { 
+          var promotions = context.Promotions
+          .Include(p => p.Orders)
+          .ToList();
 
-        //    return Ok(promotions);
-        //}
-        //[HttpGet("FindPromotionById")]
-        //public IActionResult GetPromotion(int id)
-        //{
-        //    var promotion = context.Promotions
-        //  .Include(p => p.Order)
-        //  .FirstOrDefault(p => p.PromotionID == id);
+            return Ok(promotions);
+        }
+        [HttpGet("FindPromotionById")]
+        public IActionResult GetPromotion(int id)
+        {
+           var promotion = context.Promotions
+         .Include(p => p.Orders)
+         .FirstOrDefault(p => p.PromotionId == id);
 
-        //    if (promotion == null)
-        //        return NotFound();
+            if (promotion == null)
+               return NotFound();
 
-        //    return Ok(promotion);
-        //}
-        //[HttpGet("ActivePromotions")]
-        //public IActionResult GetActivePromotions()
-        //{
-        //  var promotions = context.Promotions
-        //  .Where(p => p.PromotionExpiry >= DateTime.Now)
-        //  .Include(p => p.Order)
-        //  .ToList();
+          return Ok(promotion);
+        }
+        [HttpGet("ActivePromotions")]
+        public IActionResult GetActivePromotions()
+        {
+          var promotions = context.Promotions
+          .Where(p => p.PromotionExpiry >= DateTime.Now)
+         .Include(p => p.Orders)
+          .ToList();
 
-        //    return Ok(promotions);
-        //}
+            return Ok(promotions);
+        }
         [HttpGet("sortingPromotion")]
         public IActionResult sortingPromotion()
         {
