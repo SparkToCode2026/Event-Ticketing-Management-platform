@@ -13,21 +13,28 @@ namespace Project_Solutions.Controllers
         {
         context = _context;
         }
-        //[HttpPost("AddPromotion")]
-        //public IActionResult AddPromotion([FromBody]Promotion promotion)
-        //{
-        //    var existingPromotion = context.Promotions
-        //        .FirstOrDefault(p => p.OrderId == promotion.OrderId);
+        [HttpPost("AddPromotion")]
+        public IActionResult AddPromotion(int orderId,[FromBody]Promotion promotion)
+        {
+         var order = context.Orders.FirstOrDefault(o => o.OrderId == orderId);
 
-        //    if (existingPromotion != null)
-        //    {
-        //     return BadRequest("This order already has a promotion.");   
-        //    }
-        //    context.Promotions.Add(promotion);
-        //    context.SaveChanges();
+         if (order == null)
+            {
+                return NotFound("Order not found.");
+            }
 
-        //    return Ok(promotion);
-        //}
+            if (order.PromotionId != null)
+            {
+                return BadRequest("This order already has a promotion.");
+            }
+            context.Promotions.Add(promotion);
+            context.SaveChanges();
+            
+            order.PromotionId = promotion.PromotionId;
+            context.SaveChanges();
+
+            return Ok(promotion);
+        }
         [HttpPut("UpdatePromotion")]
         public IActionResult UpdatePromotion(int id, [FromBody]Promotion updatedPromotion)
         {
@@ -70,37 +77,37 @@ namespace Project_Solutions.Controllers
 
          return Ok("Promotion deleted successfully.");
         }
-        //[HttpGet("list")]
-        //public IActionResult GetPromotions()
-        //{ 
-        //  var promotions = context.Promotions
-        //  .Include(p => p.Order)
-        //  .ToList();
+        [HttpGet("list")]
+        public IActionResult GetPromotions()
+        { 
+          var promotions = context.Promotions
+          .Include(p => p.Orders)
+          .ToList();
 
-        //    return Ok(promotions);
-        //}
-        //[HttpGet("FindPromotionById")]
-        //public IActionResult GetPromotion(int id)
-        //{
-        //    var promotion = context.Promotions
-        //  .Include(p => p.Order)
-        //  .FirstOrDefault(p => p.PromotionID == id);
+            return Ok(promotions);
+        }
+        [HttpGet("FindPromotionById")]
+        public IActionResult GetPromotion(int id)
+        {
+           var promotion = context.Promotions
+         .Include(p => p.Orders)
+         .FirstOrDefault(p => p.PromotionId == id);
 
-        //    if (promotion == null)
-        //        return NotFound();
+            if (promotion == null)
+               return NotFound();
 
-        //    return Ok(promotion);
-        //}
-        //[HttpGet("ActivePromotions")]
-        //public IActionResult GetActivePromotions()
-        //{
-        //  var promotions = context.Promotions
-        //  .Where(p => p.PromotionExpiry >= DateTime.Now)
-        //  .Include(p => p.Order)
-        //  .ToList();
+          return Ok(promotion);
+        }
+        [HttpGet("ActivePromotions")]
+        public IActionResult GetActivePromotions()
+        {
+          var promotions = context.Promotions
+          .Where(p => p.PromotionExpiry >= DateTime.Now)
+         .Include(p => p.Orders)
+          .ToList();
 
-        //    return Ok(promotions);
-        //}
+            return Ok(promotions);
+        }
         [HttpGet("sortingPromotion")]
         public IActionResult sortingPromotion()
         {
