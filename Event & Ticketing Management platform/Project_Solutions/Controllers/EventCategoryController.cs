@@ -92,6 +92,22 @@ namespace Project_Solutions.Controllers
                 .ToList();
         }
 
+        //8: GET list of category count of events
+        [HttpGet("GetCategoryEventCounts")]
+        public object GetCategoryEventCounts()
+        {
+            var result = _appDbContext.EventCategories
+                .Include(c => c.Events)
+                .Select(c => new
+                {
+                    CategoryName = c.EventCategoryName,
+                    EventCount = c.Events.Count()
+                })
+                .ToList();
+
+            return result;
+        }
+
 
 
     }
