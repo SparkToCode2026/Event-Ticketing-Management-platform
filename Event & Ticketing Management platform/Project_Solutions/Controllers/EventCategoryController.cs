@@ -52,6 +52,16 @@ namespace Project_Solutions.Controllers
         }
 
 
+        //4: get all event categories
+        [HttpGet("GetAllEventCategories")]
+        public List<EventCategory> GetEventCategories()
+        {
+            return _appDbContext.EventCategories
+                .Include(c => c.Events)
+                .ToList();
+        }
+
+
 
 
 
