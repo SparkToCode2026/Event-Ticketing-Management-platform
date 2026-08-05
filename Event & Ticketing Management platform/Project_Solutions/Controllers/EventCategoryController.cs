@@ -39,6 +39,19 @@ namespace Project_Solutions.Controllers
             }
         }
 
+        //3: delete an existing event category
+        [HttpDelete("DeleteEventCategory/{id}")]
+        public void DeleteEventCategory(int id) {
+            var existingCategory = _appDbContext.EventCategories.Find(id);
+
+            if (existingCategory != null)
+            {
+                _appDbContext.EventCategories.Remove(existingCategory);
+                _appDbContext.SaveChanges();
+            }
+        }
+
+
 
 
 
