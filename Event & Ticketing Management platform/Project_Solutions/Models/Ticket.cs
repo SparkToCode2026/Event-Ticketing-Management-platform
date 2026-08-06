@@ -16,6 +16,7 @@ namespace Project_Solutions.Models
         //1:M many tickets share one type
         [Required]
         public int TicketTypeId { get; set; }
+        
         [ForeignKey("TicketTypeId")]
         [JsonIgnore]
         [ValidateNever]

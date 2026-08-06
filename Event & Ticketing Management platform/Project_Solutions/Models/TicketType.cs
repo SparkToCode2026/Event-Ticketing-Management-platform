@@ -22,7 +22,7 @@ namespace Project_Solutions.Models
         public int EventId { get; set; }
         [ForeignKey("EventId")]
         [JsonIgnore]
-        public Event Event { get; set; }
+        public Event?  Event { get; set; }
 
         // 1:M one ticket type has many tickets
         [JsonIgnore]

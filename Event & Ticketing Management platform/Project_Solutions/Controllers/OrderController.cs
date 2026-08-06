@@ -22,37 +22,57 @@ namespace Project_Solutions.Controllers
         // POST: Order/AddOrder
         [HttpPost("AddOrder")]
         [Authorize]
-        public async Task<IActionResult> AddOrder(Order order)
+        public async Task<IActionResult> AddOrder(OrderRequest request)
         {
-            // user email for email notification
-            User user = context.Users.FirstOrDefault(u => u.UserId == order.UserId);
-            if (user == null) {
-                return NotFound($"User with id: {order.UserId} not found");
-            }
+            decimal total = 0;
+            var ticketsToCreate = new List<Ticket>();
 
-            // verify promotion id provided
-            if (order.PromotionId.HasValue)
+            foreach (var item in request.Items)
             {
-                var promoExists = context.Promotions.Any(p => p.PromotionId == order.PromotionId.Value);
-                if (!promoExists)
+                if (item.Quantity <= 0)
                 {
-                    return NotFound($"Promotion with id: {order.PromotionId.Value} not found");
+                    return BadRequest($"Invalid quantity for ticket type {item.TicketTypeId}");
+                }
+
+                var ticketType = await context.TicketTypes.FindAsync(item.TicketTypeId);
+                if (ticketType == null)
+                {
+                    return BadRequest($"Invalid ticket type: {item.TicketTypeId}");
+                }
+
+                total += ticketType.Price * item.Quantity;
+
+                for (int i = 0; i < item.Quantity; i++)
+                {
+                    ticketsToCreate.Add(new Ticket
+                    {
+                        IsUsed = false,
+                        IssuedAt = DateTime.Now,
+                        TicketTypeId = item.TicketTypeId
+                    });
                 }
             }
 
-            // set defaults
-            order.OrderDate = DateTime.Now;
-            if (string.IsNullOrEmpty(order.OrderStatus))
+            var order = new Order
             {
-                order.OrderStatus = "Pending";
-            }
+                UserId = request.UserId,
+                OrderDate = DateTime.Now,
+                OrderStatus = "Pending",
+                TotalAmount = total
+            };
 
-            // add order to database
             context.Orders.Add(order);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
-            // send email notification
-            string subject = $"Your HexaCode Order #{order.OrderId} - Confimation";
+            foreach (var ticket in ticketsToCreate)
+            {
+                ticket.OrderId = order.OrderId;
+                context.Tickets.Add(ticket);
+            }
+            await context.SaveChangesAsync();
+
+            var user = await context.Users.FindAsync(order.UserId);
+            string subject = $"Your HexaCode Order #{order.OrderId} - Confirmation";
             string body = $"Hi {user.UserName}\n\n" +
                 $"Thank you for your order!\n\n" +
                 $"Order ID: {order.OrderId}\n" +
@@ -63,7 +83,6 @@ namespace Project_Solutions.Controllers
                 $"See you at the event!\n\n" +
                 $"HexaCode Team";
 
-            // send it
             try
             {
                 await emailService.SendEmailAsync(user.Email, subject, body);
@@ -73,7 +92,7 @@ namespace Project_Solutions.Controllers
                 Console.WriteLine($"Email failed for order {order.OrderId}: {ex.Message}");
             }
 
-            return Ok($"Order added successfully with id: {order.OrderId}. Confirmation email sent to {user.Email}");
+            return Ok(new { orderId = order.OrderId, totalAmount = order.TotalAmount });
         }
 
         // PUT: Full update
@@ -196,12 +215,12 @@ namespace Project_Solutions.Controllers
         [Authorize]
         public IActionResult GetRevenueSummary()
         {
-            List<Order> confimredOrders = context.Orders
+            List<Order> confirmedOrders = context.Orders
                 .Where(o => o.OrderStatus == "Confirmed")
                 .ToList();
 
-            decimal totalRevenue = confimredOrders.Sum(o => o.TotalAmount);
-            int orderCount = confimredOrders.Count;
+            decimal totalRevenue = confirmedOrders.Sum(o => o.TotalAmount);
+            int orderCount = confirmedOrders.Count;
             decimal averageOrder = orderCount > 0 ? totalRevenue / orderCount : 0;
 
             List<Order> recentOrders = context.Orders
