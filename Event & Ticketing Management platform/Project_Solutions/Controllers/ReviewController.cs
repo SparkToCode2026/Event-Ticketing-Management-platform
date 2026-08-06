@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project_Solutions.Data;
+using Project_Solutions.Helpers;
 using Project_Solutions.Models;
 namespace Project_Solutions.Controllers
 {
@@ -15,6 +17,7 @@ namespace Project_Solutions.Controllers
         }
 
         [HttpPost("AddReview")]
+        [Authorize]
         public IActionResult AddReview([FromBody] Review review)
         {
             review.ReviewDate = DateTime.Now;
@@ -25,6 +28,7 @@ namespace Project_Solutions.Controllers
         }
 
         [HttpPut("UpdateReview")]
+        [Authorize]
         public IActionResult UpdateReview(int id, Review updatedReview)
         {
             var review = context.Reviews.Find(id);
@@ -41,6 +45,7 @@ namespace Project_Solutions.Controllers
         }
 
         [HttpPatch("UpdateRating")]
+        [Authorize]
         public IActionResult UpdateRating(int id, int rating)
         {
             var review = context.Reviews.Find(id);
@@ -56,6 +61,7 @@ namespace Project_Solutions.Controllers
         }
 
         [HttpDelete("DeleteReview")]
+        [Authorize]
         public IActionResult DeleteReview(int id)
         {
             var review = context.Reviews.Find(id);
@@ -70,6 +76,7 @@ namespace Project_Solutions.Controllers
         }
 
         [HttpGet("List")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public IActionResult GetReviews()
         {
             var reviews = context.Reviews
@@ -78,7 +85,9 @@ namespace Project_Solutions.Controllers
 
             return Ok(reviews);
         }
+
         [HttpGet("FindReviewById")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetReview(int id)
         {
             var review = context.Reviews
@@ -90,7 +99,9 @@ namespace Project_Solutions.Controllers
 
             return Ok(review);
         }
+
         [HttpGet("FilterReviews")]
+        [Authorize]
         public IActionResult FilterReviews(int minRating)
         {
             var reviews = context.Reviews
@@ -102,6 +113,7 @@ namespace Project_Solutions.Controllers
         }
 
         [HttpGet("sortingReview")]
+        [Authorize]
         public IActionResult ReviewSorting()
         {
             var averageRating = context.Reviews.Average(r => r.Rating);

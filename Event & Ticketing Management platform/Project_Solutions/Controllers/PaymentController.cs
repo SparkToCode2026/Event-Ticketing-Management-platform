@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project_Solutions.Data;
+using Project_Solutions.Helpers;
 using Project_Solutions.Models;
 
 namespace Project_Solutions.Controllers
@@ -21,6 +23,7 @@ namespace Project_Solutions.Controllers
 
         // Create a new payment
         [HttpPost("AddPayment")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult AddPayment([FromBody] Payment p)
         {
             context.Payments.Add(p);
@@ -32,6 +35,7 @@ namespace Project_Solutions.Controllers
 
         // Update payment
         [HttpPut("UpdatePayment")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult UpdatePayment(int id, [FromBody] Payment p)
         {
             var paymentData = context.Payments
@@ -53,6 +57,7 @@ namespace Project_Solutions.Controllers
 
         // Update payment status only
         [HttpPatch("UpdatePaymentStatus")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult UpdatePaymentStatus(int id, [FromBody] string status)
         {
             var paymentData = context.Payments
@@ -71,6 +76,7 @@ namespace Project_Solutions.Controllers
 
         // Delete payment
         [HttpDelete("DeletePayment")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult DeletePayment(int id)
         {
             var paymentData = context.Payments
@@ -88,6 +94,7 @@ namespace Project_Solutions.Controllers
 
         // Get all payments with order details
         [HttpGet("GetAllPayments")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetAllPayments()
         {
             var payments = context.Payments
@@ -100,6 +107,7 @@ namespace Project_Solutions.Controllers
 
         // Get payment by id
         [HttpGet("GetPaymentById")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetPaymentById(int id)
         {
             var payment = context.Payments
@@ -115,6 +123,7 @@ namespace Project_Solutions.Controllers
 
         // Get payments by status
         [HttpGet("FilterPayments")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult FilterPayments(string status)
         {
             var payments = context.Payments
@@ -127,6 +136,7 @@ namespace Project_Solutions.Controllers
 
         // Sort payments by amount
         [HttpGet("SortPayments")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult SortPayments()
         {
             var payments = context.Payments

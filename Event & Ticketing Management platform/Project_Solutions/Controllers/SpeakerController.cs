@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project_Solutions.Data;
+using Project_Solutions.Helpers;
 using Project_Solutions.Models;
 namespace Project_Solutions.Controllers
 {
@@ -23,6 +25,7 @@ namespace Project_Solutions.Controllers
         // Request URL https://localhost:7173/speaker/AddSpeaker
         // Request method => Post and  Request Body 
         [HttpPost("AddSpeaker")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public IActionResult AddSpeaker([FromBody] Speaker S)
         {
             context.Speakers.Add(S);
@@ -36,6 +39,7 @@ namespace Project_Solutions.Controllers
         // Request URL https://localhost:7173/speaker/UpdateSpeaker?id=3
         // Request method => Put
         [HttpPut("UpdateSpeaker")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin + "," + Roles.Speaker)]
         public IActionResult UpdateSpeaker(int id, [FromBody] Speaker s)
         {
             var speakerData = context.Speakers
@@ -56,6 +60,7 @@ namespace Project_Solutions.Controllers
         
         // Update speaker topic only
         [HttpPatch("UpdateSpeakerTopic")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin + "," + Roles.Speaker)]
         public IActionResult UpdateSpeakerTopic(int id, [FromBody] string topic)
         {
             var speakerData = context.Speakers
@@ -74,6 +79,7 @@ namespace Project_Solutions.Controllers
         // Delete speaker // Request Body   => empty
         // Request URL https://localhost:7173/speaker/DeleteSpeaker?id=3
         [HttpDelete("DeleteSpeaker")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public IActionResult DeleteSpeaker(int id)
         
         {
@@ -95,6 +101,7 @@ namespace Project_Solutions.Controllers
         // Get all speakers with event details
         //URL https://localhost:7173/speaker/GetAllSpeakers
         [HttpGet ("GetAllSpeakers")]
+        [Authorize]
         public IActionResult GetAllSpeakers()
         {
             var speakers = context.Speakers
@@ -107,6 +114,7 @@ namespace Project_Solutions.Controllers
         // Get speaker by id
         //URL https://localhost:7173/speaker/GetSpeakerById?id=3
         [HttpGet("GetSpeakerById")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetSpeakerById(int id)
         {
             var speaker = context.Speakers
@@ -121,6 +129,7 @@ namespace Project_Solutions.Controllers
         
         // Get speakers by topic
         [HttpGet("GetSpeakersByTopic")]
+        [Authorize]
         public IActionResult GetSpeakersByTopic(string topic)
         {
             var speakers = context.Speakers
@@ -132,6 +141,7 @@ namespace Project_Solutions.Controllers
         
         // Sort speakers by name
         [HttpGet("SortSpeakers")]
+        [Authorize]
         public IActionResult SortSpeakers()
         {
             var speakers = context.Speakers
