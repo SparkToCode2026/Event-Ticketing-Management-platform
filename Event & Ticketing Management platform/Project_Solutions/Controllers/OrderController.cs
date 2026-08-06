@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project_Solutions.Data;
 using Project_Solutions.Models;
+using Project_Solutions.Services.Email;
 
 namespace Project_Solutions.Controllers
 {
@@ -10,29 +11,69 @@ namespace Project_Solutions.Controllers
     [Route("Order")]
     public class OrderController : ControllerBase
     {
+        private IEmailService emailService;
         private AppDbContext context;
-        public OrderController(AppDbContext _context)
+        public OrderController(AppDbContext _context, IEmailService _emailService)
         {
             context = _context;
+            emailService = _emailService;
         }
 
         // POST: Order/AddOrder
         [HttpPost("AddOrder")]
         [Authorize]
-        public IActionResult AddOrder(Order order)
+        public async Task<IActionResult> AddOrder(Order order)
         {
+            // user email for email notification
+            User user = context.Users.FirstOrDefault(u => u.UserId == order.UserId);
+            if (user == null) {
+                return NotFound($"User with id: {order.UserId} not found");
+            }
+
+            // verify promotion id provided
+            if (order.PromotionId.HasValue)
+            {
+                var promoExists = context.Promotions.Any(p => p.PromotionId == order.PromotionId.Value);
+                if (!promoExists)
+                {
+                    return NotFound($"Promotion with id: {order.PromotionId.Value} not found");
+                }
+            }
+
+            // set defaults
             order.OrderDate = DateTime.Now;
             if (string.IsNullOrEmpty(order.OrderStatus))
             {
                 order.OrderStatus = "Pending";
             }
-            
+
+            // add order to database
             context.Orders.Add(order);
             context.SaveChanges();
 
-            // email
+            // send email notification
+            string subject = $"Your HexaCode Order #{order.OrderId} - Confimation";
+            string body = $"Hi {user.UserName}\n\n" +
+                $"Thank you for your order!\n\n" +
+                $"Order ID: {order.OrderId}\n" +
+                $"Order Date: {order.OrderDate:yyyy-MM-dd HH:mm}\n" +
+                $"Total Amount: {order.TotalAmount:F2} OMR\n" +
+                $"Order Status: {order.OrderStatus}\n\n" +
+                $"Your tickets will be issued shortly and will be available in your account.\n\n" +
+                $"See you at the event!\n\n" +
+                $"HexaCode Team";
 
-            return Ok($"Order added successfully with OrderId: {order.OrderId}");
+            // send it
+            try
+            {
+                await emailService.SendEmailAsync(user.Email, subject, body);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Email failed for order {order.OrderId}: {ex.Message}");
+            }
+
+            return Ok($"Order added successfully with id: {order.OrderId}. Confirmation email sent to {user.Email}");
         }
 
         // PUT: Full update
@@ -51,7 +92,7 @@ namespace Project_Solutions.Controllers
                 order.OrderDate = o.OrderDate;
                 order.OrderStatus = o.OrderStatus;
                 order.UserId = o.UserId;
-                // promotion
+                order.PromotionId = o.PromotionId;
 
                 context.SaveChanges();
 

@@ -21,17 +21,19 @@ namespace Project_Solutions.Controllers
         [Authorize]
         public IActionResult AddTicket(Ticket ticket)
         {
+            // verify order exists
             var orderExists = context.Orders.Any(o => o.OrderId == ticket.OrderId);
             if (!orderExists)
             {
                 return NotFound($"Order with ID {ticket.OrderId} not found.");
             }
 
-            //var ticketTypeExits = context.TicketTypes.Any(tt => tt.TicketTypeId == ticket.TicketTypes);
-            //if (!ticketTypeExits)
-            //{
-            //    return NotFound($"Ticket type with ID {ticket.TicketTypes} not found.");
-            //}
+            // verify ticket type exists
+            var ticketTypeExits = context.TicketTypes.Any(tt => tt.TicketTypeId == ticket.TicketTypeId);
+            if (!ticketTypeExits)
+            {
+                return NotFound($"Ticket type with ID {ticket.TicketTypeId} not found.");
+            }
 
             ticket.IssuedAt = DateTime.Now;
             ticket.IsUsed = false;
@@ -56,7 +58,7 @@ namespace Project_Solutions.Controllers
             {
                 ticket.IsUsed = t.IsUsed;
                 ticket.IssuedAt = DateTime.Now;
-                // ticket.TicketTypeId = t.TicketTypeId;
+                ticket.TicketTypeId = t.TicketTypeId;
                 ticket.OrderId = t.OrderId;
                 
                 context.SaveChanges();
@@ -114,8 +116,8 @@ namespace Project_Solutions.Controllers
         public IActionResult GetAllTickets()
         {
             var tickets = context.Tickets
+                .Include(t => t.TicketType)
                 .Include(t => t.Order)
-                //.Include(t => t.TicketType)
                 .ToList();
             return Ok(tickets);
         }
@@ -126,8 +128,8 @@ namespace Project_Solutions.Controllers
         public IActionResult GetTicketById(int id)
         {
             Ticket ticket = context.Tickets
+                .Include(t => t.TicketType)
                 .Include(t => t.Order)
-                //.Include(t => t.TicketType)
                 .FirstOrDefault(t => t.TicketId == id);
             if (ticket == null)
             {
@@ -146,7 +148,7 @@ namespace Project_Solutions.Controllers
         {
             List<Ticket> tickets = context.Tickets
                 .Where(t => t.OrderId == orderId)
-                //.Include(t => t.TicketType)
+                .Include(t => t.TicketType)
                 .ToList();
             return Ok(tickets);
         }
