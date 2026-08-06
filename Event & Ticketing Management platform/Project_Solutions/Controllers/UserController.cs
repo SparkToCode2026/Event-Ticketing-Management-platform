@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project_Solutions.Data;
 using Project_Solutions.Models;
+using Project_Solutions.Helpers;
 
 namespace Project_Solutions.Controllers
 {
@@ -37,7 +38,7 @@ namespace Project_Solutions.Controllers
 
         // Admin-only: changes a user's role
         [HttpPatch("{id}/role")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> UpdateRole(int id, string newRole)
         {
             var user = await _context.Users.FindAsync(id);
@@ -53,7 +54,7 @@ namespace Project_Solutions.Controllers
 
         // Admin-only: deletes a user
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Delete(int id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -70,7 +71,7 @@ namespace Project_Solutions.Controllers
 
         // Gets all users, including their OrganizerProfile if they have one
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> GetAll()
         {
             var users = await _context.Users.Include(u => u.OrganizerProfile).ToListAsync();
@@ -90,7 +91,7 @@ namespace Project_Solutions.Controllers
 
         // Filters users by role (e.g. "Organizer")
         [HttpGet("by-role/{role}")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> GetByRole(string role)
         {
             var users = await _context.Users.Where(u => u.Role == role).ToListAsync();
@@ -99,7 +100,7 @@ namespace Project_Solutions.Controllers
 
         // Admin-only: counts how many users exist per role
         [HttpGet("role-counts")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> GetRoleCounts()
         {
             var counts = await _context.Users.GroupBy(u => u.Role).Select(g => new { Role = g.Key, Count = g.Count() }).ToListAsync();

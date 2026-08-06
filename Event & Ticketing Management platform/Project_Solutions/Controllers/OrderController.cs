@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project_Solutions.Data;
+using Project_Solutions.Helpers;
 using Project_Solutions.Models;
 using Project_Solutions.Services.Email;
 using System.Security.Claims;
@@ -192,7 +193,7 @@ namespace Project_Solutions.Controllers
 
         // GET (list) includes User, Tickets and Payment
         [HttpGet("GetAllOrders")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetAllOrders()
         {
             List<Order> orders = context.Orders
@@ -206,7 +207,7 @@ namespace Project_Solutions.Controllers
 
         // GET by id
         [HttpGet("GetOrderById")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetOrderById(int id)
         {
             Order order = context.Orders
@@ -227,7 +228,7 @@ namespace Project_Solutions.Controllers
 
         // GET by user id
         [HttpGet("GetOrdersByUserId")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetOrdersByUserId(int userId)
         {
             List<Order> orders = context.Orders
@@ -241,7 +242,7 @@ namespace Project_Solutions.Controllers
 
         // GET revenue summary from confirmed orders
         [HttpGet("GetRevenueSummary")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetRevenueSummary()
         {
             List<Order> confirmedOrders = context.Orders

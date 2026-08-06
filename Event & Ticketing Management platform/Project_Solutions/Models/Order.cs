@@ -43,7 +43,10 @@ namespace Project_Solutions.Models
         public Payment? Payment { get; set; }
     }
 
-
+    public class OrderRequest
+    {
+        public List<OrderItem> Items { get; set; }   // UserId removed, but the class stays
+    }
     public class OrderItem
     {
         public int TicketTypeId { get; set; }
