@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Project_Solutions.Models;
 using Project_Solutions.Data;
+using Project_Solutions.Helpers;
+using Project_Solutions.Models;
 
 namespace Project_Solutions.Controllers
 {
@@ -17,6 +19,7 @@ namespace Project_Solutions.Controllers
 
         //1: Add a new event
         [HttpPost("AddEvent")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public void AddEvent(Event e)
         {
             _appDbContext.Events.Add(e);
@@ -25,6 +28,7 @@ namespace Project_Solutions.Controllers
 
         //2: update an existing event
         [HttpPut("UpdateEvent/{id}")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public void UpdateEvent(int id, Event updatedEvent)
         {
             var existingEvent = _appDbContext.Events.Find(id);
@@ -46,6 +50,7 @@ namespace Project_Solutions.Controllers
 
         //3: Reschedule an event
         [HttpPatch("RescheduleEvent/{id}")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public void RescheduleEvent(int id, Event updatedEvent)
         {
             var existingEvent = _appDbContext.Events.Find(id);
@@ -63,6 +68,7 @@ namespace Project_Solutions.Controllers
 
         //4: delete an event
         [HttpDelete("DeleteEvent/{id}")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public void DeleteEvent(int id)
         {
             var existingEvent = _appDbContext.Events.Find(id);
@@ -76,6 +82,7 @@ namespace Project_Solutions.Controllers
 
         //5: get all events
         [HttpGet("GetEvents")]
+        [Authorize]
         public List<Event> GetEvents()
         {
             return _appDbContext.Events
@@ -87,6 +94,7 @@ namespace Project_Solutions.Controllers
 
         //6: get event by id
         [HttpGet("GetEventById/{id}")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public Event? GetEventById(int id)
         {
             return _appDbContext.Events
@@ -101,6 +109,7 @@ namespace Project_Solutions.Controllers
 
         //7: get upcoming events
         [HttpGet("GetUpcomingEvents")]
+        [Authorize]
         public List<Event> GetUpcomingEvents()
         {
             return _appDbContext.Events
@@ -110,6 +119,7 @@ namespace Project_Solutions.Controllers
 
         //8: get event Summry
         [HttpGet("GetEventSummary/{id}")]
+        [Authorize]
         public object GetEventsSummary()
         {
             var events = _appDbContext.Events
