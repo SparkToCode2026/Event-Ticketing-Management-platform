@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project_Solutions.Data;
+using Project_Solutions.Helpers;
 using Project_Solutions.Models;
 
 namespace Project_Solutions.Controllers
@@ -18,6 +20,7 @@ namespace Project_Solutions.Controllers
 
         //1: create a new event category
         [HttpPost("AddEventCategory")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public void AddEventCategory(EventCategory category)
         {
             _appDbContext.EventCategories.Add(category);
@@ -26,6 +29,7 @@ namespace Project_Solutions.Controllers
 
         //2: update name and description of an existing event category
         [HttpPut("UpdateEventCategory/{id}")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public void UpdateEventCategory(int id, EventCategory updatedCategory)
         {
             var existingCategory = _appDbContext.EventCategories.Find(id);
@@ -41,6 +45,7 @@ namespace Project_Solutions.Controllers
 
         //3: delete an existing event category
         [HttpDelete("DeleteEventCategory/{id}")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public void DeleteEventCategory(int id) {
             var existingCategory = _appDbContext.EventCategories.Find(id);
 
@@ -54,6 +59,7 @@ namespace Project_Solutions.Controllers
 
         //4: get all event categories
         [HttpGet("GetAllEventCategories")]
+        [Authorize]
         public List<EventCategory> GetEventCategories()
         {
             return _appDbContext.EventCategories
@@ -63,6 +69,7 @@ namespace Project_Solutions.Controllers
 
         //5: Patch an existing event and event category to reassign the event to a different category
         [HttpPatch("ReassignEvent/{eventId}/{categoryId}")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public void ReassignEvent(int eventId, int categoryId)
         {
             var existingEvent = _appDbContext.Events.Find(eventId);
@@ -76,6 +83,7 @@ namespace Project_Solutions.Controllers
 
         //6: find category by id
         [HttpGet("GetEventCategoryById/{id}")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public EventCategory GetEventCategoryById(int id)
         {
             return _appDbContext.EventCategories
@@ -85,6 +93,7 @@ namespace Project_Solutions.Controllers
 
         //7: filter/search event categories by keyword
         [HttpGet("SearchEventCategories")]
+        [Authorize]
         public List<EventCategory> SearchEventCategories(string keyword)
         {
             return _appDbContext.EventCategories
@@ -94,6 +103,7 @@ namespace Project_Solutions.Controllers
 
         //8: GET list of category count of events
         [HttpGet("GetCategoryEventCounts")]
+        [Authorize]
         public object GetCategoryEventCounts()
         {
             var result = _appDbContext.EventCategories
