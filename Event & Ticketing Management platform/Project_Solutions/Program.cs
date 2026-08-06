@@ -8,6 +8,8 @@ using Project_Solutions.Services.Auth;
 using Project_Solutions.Services.Email;
 using System.Text;
 
+using Project_Solutions.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // ==========================================================
