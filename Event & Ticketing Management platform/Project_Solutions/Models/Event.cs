@@ -25,14 +25,14 @@ namespace Project_Solutions.Models
         public int EventCategoryId { get; set; }
         [ForeignKey("EventCategoryId")]
         [JsonIgnore]
-        public EventCategory EventCategory { get; set; }
+        public EventCategory? EventCategory { get; set; }
 
         // M:1 many events per organizer
         [Required]
         public int OrganizerId { get; set; }
         [ForeignKey("OrganizerId")]
         [JsonIgnore]
-        public OrganizerProfile OrganizerProfile { get; set; }
+        public OrganizerProfile? OrganizerProfile { get; set; }
 
         // 1:M one event has many speakers
         [JsonIgnore]
@@ -43,7 +43,7 @@ namespace Project_Solutions.Models
         public int VenueId { get; set; }
         [ForeignKey("VenueId")]
         [JsonIgnore]
-        public Venue Venue { get; set; }
+        public Venue? Venue { get; set; }
 
         // 1:M one event has many tickets tiers
         [JsonIgnore]

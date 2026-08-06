@@ -2,13 +2,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Project_Solutions.Data;
+using Project_Solutions.Services;
 using Project_Solutions.Services.Auth;
 using Project_Solutions.Services.Email;
 using System.Text;
-
-using Project_Solutions.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,6 +93,13 @@ builder.Services.AddSwaggerGen(options =>
             },
             new string[] {}
         }
+    });
+
+    options.MapType<TimeOnly>(() => new OpenApiSchema
+    {
+        Type = "string",
+        Format = "time",
+        Example = new OpenApiString("09:30:00")
     });
 });
 
