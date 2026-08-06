@@ -42,4 +42,16 @@ namespace Project_Solutions.Models
         [ValidateNever]
         public Payment? Payment { get; set; }
     }
+
+    public class OrderRequest
+    {
+        public int UserId { get; set; }
+        public List<OrderItem> Items { get; set; }
+    }
+
+    public class OrderItem
+    {
+        public int TicketTypeId { get; set; }
+        public int Quantity { get; set; }
+    }
 }
