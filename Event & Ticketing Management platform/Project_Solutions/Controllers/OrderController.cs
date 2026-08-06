@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Project_Solutions.Data;
 using Project_Solutions.Models;
 using Project_Solutions.Services.Email;
+using System.Security.Claims;
 
 namespace Project_Solutions.Controllers
 {
@@ -24,8 +25,26 @@ namespace Project_Solutions.Controllers
         [Authorize]
         public async Task<IActionResult> AddOrder(OrderRequest request)
         {
+            // Get the logged-in user's ID from their JWT token, not the request body
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId))
+            {
+                return Unauthorized("Invalid or missing user token.");
+            }
+
+            var user = await context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return BadRequest("Invalid user.");
+            }
+
             decimal total = 0;
             var ticketsToCreate = new List<Ticket>();
+
+            if (request.Items == null || !request.Items.Any())
+            {
+                return BadRequest("Order must contain at least one item.");
+            }
 
             foreach (var item in request.Items)
             {
@@ -55,23 +74,33 @@ namespace Project_Solutions.Controllers
 
             var order = new Order
             {
-                UserId = request.UserId,
+                UserId = userId,   // ← from the token, not request.UserId
                 OrderDate = DateTime.Now,
                 OrderStatus = "Pending",
                 TotalAmount = total
             };
 
-            context.Orders.Add(order);
-            await context.SaveChangesAsync();
-
-            foreach (var ticket in ticketsToCreate)
+            using var transaction = await context.Database.BeginTransactionAsync();
+            try
             {
-                ticket.OrderId = order.OrderId;
-                context.Tickets.Add(ticket);
-            }
-            await context.SaveChangesAsync();
+                context.Orders.Add(order);
+                await context.SaveChangesAsync();
 
-            var user = await context.Users.FindAsync(order.UserId);
+                foreach (var ticket in ticketsToCreate)
+                {
+                    ticket.OrderId = order.OrderId;
+                    context.Tickets.Add(ticket);
+                }
+                await context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+
             string subject = $"Your HexaCode Order #{order.OrderId} - Confirmation";
             string body = $"Hi {user.UserName}\n\n" +
                 $"Thank you for your order!\n\n" +
