@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Project_Solutions.Models;
 using Project_Solutions.Data;
+using Project_Solutions.Helpers;
+using Project_Solutions.Models;
  
 namespace Project_Solutions.Controllers
 {
@@ -18,6 +20,7 @@ namespace Project_Solutions.Controllers
  
         // GET: api/TicketType
         [HttpGet]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public async Task<ActionResult<IEnumerable<TicketType>>> GetTicketTypes()
         {
             return await _context.TicketTypes.ToListAsync();
@@ -25,6 +28,7 @@ namespace Project_Solutions.Controllers
  
         // GET: api/TicketType/5
         [HttpGet("{id}")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<TicketType>> GetTicketType(int id)
         {
             var ticketType = await _context.TicketTypes.FindAsync(id);
@@ -39,6 +43,7 @@ namespace Project_Solutions.Controllers
  
         // GET: api/TicketType/ByTicket/5
         [HttpGet("ByTicket/{ticketId}")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public async Task<ActionResult<IEnumerable<TicketType>>> GetTicketTypesByTicket(int ticketId)
         {
             var ticketTypes = await _context.TicketTypes
@@ -50,6 +55,7 @@ namespace Project_Solutions.Controllers
  
         // POST: api/TicketType
         [HttpPost]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public async Task<ActionResult<TicketType>> PostTicketType(TicketType ticketType)
         {
             _context.TicketTypes.Add(ticketType);
@@ -60,6 +66,7 @@ namespace Project_Solutions.Controllers
  
         // PUT: api/TicketType/5
         [HttpPut("{id}")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public async Task<IActionResult> PutTicketType(int id, TicketType ticketType)
         {
             if (id != ticketType.TicketTypeId)
@@ -90,6 +97,7 @@ namespace Project_Solutions.Controllers
  
         // DELETE: api/TicketType/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public async Task<IActionResult> DeleteTicketType(int id)
         {
             var ticketType = await _context.TicketTypes.FindAsync(id);
