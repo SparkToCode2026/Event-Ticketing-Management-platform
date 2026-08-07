@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Project_Solutions.Data;
 using Project_Solutions.Helpers;
 using Project_Solutions.Models;
+using System.Security.Claims;
 
 namespace Project_Solutions.Controllers
 {
@@ -11,8 +12,6 @@ namespace Project_Solutions.Controllers
     [Route("Payment")]
     public class PaymentController : ControllerBase
     {
-
-        // The DbContext is our connection to SQL Server.
         private readonly AppDbContext context;
 
         public PaymentController(AppDbContext _context)
@@ -21,12 +20,27 @@ namespace Project_Solutions.Controllers
         }
 
 
-        // Create a new payment
+        // Create a new payment — called by the Attendee who owns the order
         [HttpPost("AddPayment")]
-        [Authorize(Roles = Roles.Admin)]
+        [Authorize]
         public IActionResult AddPayment([FromBody] Payment p)
         {
+            var order = context.Orders.FirstOrDefault(o => o.OrderId == p.OrderId);
+            if (order == null)
+                return NotFound("Order not found.");
+
+            var existingPayment = context.Payments
+                .FirstOrDefault(existing => existing.OrderId == p.OrderId);
+            if (existingPayment != null)
+                return BadRequest("This order already has a payment.");
+
+            p.PaymentDate = DateTime.Now;
+            p.PaymentStatus = "Completed";
+
             context.Payments.Add(p);
+
+            order.OrderStatus = "Confirmed";
+
             context.SaveChanges();
 
             return Ok(p);
@@ -67,6 +81,13 @@ namespace Project_Solutions.Controllers
                 return NotFound();
 
             paymentData.PaymentStatus = status;
+
+            if (status == "Refunded" || status == "Failed")
+            {
+                var order = context.Orders.FirstOrDefault(o => o.OrderId == paymentData.OrderId);
+                if (order != null)
+                    order.OrderStatus = "Pending";
+            }
 
             context.SaveChanges();
 
@@ -145,6 +166,5 @@ namespace Project_Solutions.Controllers
 
             return Ok(payments);
         }
-
     }
 }
