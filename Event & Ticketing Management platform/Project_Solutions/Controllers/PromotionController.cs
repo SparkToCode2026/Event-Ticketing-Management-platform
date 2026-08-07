@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project_Solutions.Data;
+using Project_Solutions.Helpers;
 using Project_Solutions.Models;
 namespace Project_Solutions.Controllers
 {
@@ -13,7 +15,9 @@ namespace Project_Solutions.Controllers
         {
         context = _context;
         }
+
         [HttpPost("AddPromotion")]
+        [Authorize]
         public IActionResult AddPromotion(int orderId,[FromBody]Promotion promotion)
         {
          var order = context.Orders.FirstOrDefault(o => o.OrderId == orderId);
@@ -35,7 +39,9 @@ namespace Project_Solutions.Controllers
 
             return Ok(promotion);
         }
+
         [HttpPut("UpdatePromotion")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult UpdatePromotion(int id, [FromBody]Promotion updatedPromotion)
         {
             var promotion = context.Promotions.Find(id);
@@ -50,7 +56,9 @@ namespace Project_Solutions.Controllers
 
             return Ok(promotion);
         }
+
         [HttpPatch("UpdateExpiryDate")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult UpdateExpiryDate(int id, DateTime expiryDate)
         {
             var promotion = context.Promotions.Find(id);
@@ -64,7 +72,9 @@ namespace Project_Solutions.Controllers
 
             return Ok(promotion);
         }
+
         [HttpDelete("DeletePromotion")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult DeletePromotion(int id)
         {
           var promotion = context.Promotions.Find(id);
@@ -77,7 +87,9 @@ namespace Project_Solutions.Controllers
 
          return Ok("Promotion deleted successfully.");
         }
+
         [HttpGet("list")]
+        [Authorize]
         public IActionResult GetPromotions()
         { 
           var promotions = context.Promotions
@@ -86,7 +98,9 @@ namespace Project_Solutions.Controllers
 
             return Ok(promotions);
         }
+
         [HttpGet("FindPromotionById")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetPromotion(int id)
         {
            var promotion = context.Promotions
@@ -98,7 +112,9 @@ namespace Project_Solutions.Controllers
 
           return Ok(promotion);
         }
+
         [HttpGet("ActivePromotions")]
+        [Authorize]
         public IActionResult GetActivePromotions()
         {
           var promotions = context.Promotions
@@ -108,7 +124,9 @@ namespace Project_Solutions.Controllers
 
             return Ok(promotions);
         }
+
         [HttpGet("sortingPromotion")]
+        [Authorize]
         public IActionResult sortingPromotion()
         {
             var sortingPromotion = context.Promotions

@@ -18,7 +18,7 @@ namespace Project_Solutions.Models
         [Required]
         public string PasswordHash { get; set; }
 
-        [Required, MaxLength(20)]
+        
         public string Role { get; set; }
         
         // 1:1 a user may be an orgnizer
@@ -45,8 +45,6 @@ namespace Project_Solutions.Models
         [Required, MinLength(6)]
         public string Password { get; set; }
 
-        [Required, MaxLength(20)]
-        public string Role { get; set; }
     }
 
     public class LoginRequest
@@ -56,5 +54,11 @@ namespace Project_Solutions.Models
 
         [Required]
         public string Password { get; set; }
+    }
+
+    public class UpdateRoleRequest
+    {
+        [Required]
+        public string Role { get; set; }
     }
 }

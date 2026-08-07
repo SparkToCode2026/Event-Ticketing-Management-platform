@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project_Solutions.Data;
+using Project_Solutions.Helpers;
 using Project_Solutions.Models;
 
 namespace Project_Solutions.Controllers
@@ -143,7 +144,7 @@ namespace Project_Solutions.Controllers
 
         // GET all ticket for a given Order ID
         [HttpGet("GetTicketsByOrderId")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetTicketByOrderId(int orderId)
         {
             List<Ticket> tickets = context.Tickets

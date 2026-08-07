@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project_Solutions.Data;
+using Project_Solutions.Helpers;
 using Project_Solutions.Models;
 
 namespace Project_Solutions.Controllers
@@ -19,7 +20,7 @@ namespace Project_Solutions.Controllers
 
         // Creates a new organizer profile
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Create(OrganizerProfile newProfile)
         {
             if (!ModelState.IsValid)
@@ -35,7 +36,7 @@ namespace Project_Solutions.Controllers
 
         // Updates CompanyName
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public async Task<IActionResult> Update(int id, OrganizerProfile updatedProfile)
         {
             var profile = await _context.OrganizerProfiles.FindAsync(id);
@@ -52,7 +53,7 @@ namespace Project_Solutions.Controllers
 
         // Reassigns this profile to a different User
         [HttpPatch("{id}/user")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> ReassignUser(int id, int newUserId)
         {
             var profile = await _context.OrganizerProfiles.FindAsync(id);
@@ -69,7 +70,7 @@ namespace Project_Solutions.Controllers
 
         // Deletes an organizer profile
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Delete(int id)
         {
             var profile = await _context.OrganizerProfiles.FindAsync(id);
@@ -98,7 +99,7 @@ namespace Project_Solutions.Controllers
 
         // Gets a single organizer profile by Id
         [HttpGet("{id}")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> GetById(int id)
         {
             var profile = await _context.OrganizerProfiles

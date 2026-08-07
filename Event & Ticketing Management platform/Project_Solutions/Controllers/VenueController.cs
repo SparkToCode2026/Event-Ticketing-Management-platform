@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Project_Solutions.Models;
 // TODO: عدّل الـ using هذا ليطابق مكان الـ DbContext عندك
 using Project_Solutions.Data;
- 
+using Project_Solutions.Models;
+using Project_Solutions.Helpers;
+using Microsoft.AspNetCore.Authorization;
+
+
 namespace Project_Solutions.Controllers
 {
     [Route("api/[controller]")]
@@ -25,6 +28,7 @@ namespace Project_Solutions.Controllers
  
         // GET: api/Venue/5
         [HttpGet("{id}")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public async Task<ActionResult<Venue>> GetVenue(int id)
         {
             var venue = await _context.Venues.FindAsync(id);
@@ -39,6 +43,7 @@ namespace Project_Solutions.Controllers
  
         // POST: api/Venue
         [HttpPost]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public async Task<ActionResult<Venue>> PostVenue(Venue venue)
         {
             _context.Venues.Add(venue);
@@ -49,6 +54,7 @@ namespace Project_Solutions.Controllers
  
         // PUT: api/Venue/5
         [HttpPut("{id}")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public async Task<IActionResult> PutVenue(int id, Venue venue)
         {
             if (id != venue.VenueId)
@@ -79,6 +85,7 @@ namespace Project_Solutions.Controllers
  
         // DELETE: api/Venue/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public async Task<IActionResult> DeleteVenue(int id)
         {
             var venue = await _context.Venues.FindAsync(id);

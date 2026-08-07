@@ -4,6 +4,7 @@ using Project_Solutions.Data;
 using Project_Solutions.Helpers;
 using Project_Solutions.Models;
 using Project_Solutions.Services.Auth;
+using Project_Solutions.Helpers;
 
 namespace Project_Solutions.Controllers
 {
@@ -42,7 +43,7 @@ namespace Project_Solutions.Controllers
             {
                 UserName = request.UserName,
                 Email = request.Email,
-                Role = request.Role
+                Role = Roles.Attendee
             };
 
             newUser.PasswordHash = _passwordHasher.HashPassword(newUser, request.Password);

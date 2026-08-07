@@ -18,7 +18,7 @@ namespace Project_Solutions.Models
         public int UserId { get; set; }
         [ForeignKey("UserId")]
         [JsonIgnore]
-        public User User { get; set; }
+        public User? User { get; set; }
 
 
         //1:M relationship with OrganizerProfile and Events

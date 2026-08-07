@@ -26,4 +26,15 @@ namespace Project_Solutions.Models
         [JsonIgnore]
         public Order Order { get; set; }
     }
+
+    //when a user wants to make a payment, they will send a request with the payment method and the order ID.
+    //This class represents that request.
+    public class PaymentRequest
+    {
+        [Required]
+        public string PaymentMethod { get; set; }
+
+        [Required]
+        public int OrderId { get; set; }
+    }
 }

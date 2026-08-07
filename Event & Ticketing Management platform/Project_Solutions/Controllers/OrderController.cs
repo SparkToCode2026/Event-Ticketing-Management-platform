@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project_Solutions.Data;
+using Project_Solutions.Helpers;
 using Project_Solutions.Models;
 using Project_Solutions.Services.Email;
+using System.Security.Claims;
 
 namespace Project_Solutions.Controllers
 {
@@ -22,37 +24,85 @@ namespace Project_Solutions.Controllers
         // POST: Order/AddOrder
         [HttpPost("AddOrder")]
         [Authorize]
-        public async Task<IActionResult> AddOrder(Order order)
+        public async Task<IActionResult> AddOrder(OrderRequest request)
         {
-            // user email for email notification
-            User user = context.Users.FirstOrDefault(u => u.UserId == order.UserId);
-            if (user == null) {
-                return NotFound($"User with id: {order.UserId} not found");
+            // Get the logged-in user's ID from their JWT token, not the request body
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId))
+            {
+                return Unauthorized("Invalid or missing user token.");
             }
 
-            // verify promotion id provided
-            if (order.PromotionId.HasValue)
+            var user = await context.Users.FindAsync(userId);
+            if (user == null)
             {
-                var promoExists = context.Promotions.Any(p => p.PromotionId == order.PromotionId.Value);
-                if (!promoExists)
+                return BadRequest("Invalid user.");
+            }
+
+            decimal total = 0;
+            var ticketsToCreate = new List<Ticket>();
+
+            if (request.Items == null || !request.Items.Any())
+            {
+                return BadRequest("Order must contain at least one item.");
+            }
+
+            foreach (var item in request.Items)
+            {
+                if (item.Quantity <= 0)
                 {
-                    return NotFound($"Promotion with id: {order.PromotionId.Value} not found");
+                    return BadRequest($"Invalid quantity for ticket type {item.TicketTypeId}");
+                }
+
+                var ticketType = await context.TicketTypes.FindAsync(item.TicketTypeId);
+                if (ticketType == null)
+                {
+                    return BadRequest($"Invalid ticket type: {item.TicketTypeId}");
+                }
+
+                total += ticketType.Price * item.Quantity;
+
+                for (int i = 0; i < item.Quantity; i++)
+                {
+                    ticketsToCreate.Add(new Ticket
+                    {
+                        IsUsed = false,
+                        IssuedAt = DateTime.Now,
+                        TicketTypeId = item.TicketTypeId
+                    });
                 }
             }
 
-            // set defaults
-            order.OrderDate = DateTime.Now;
-            if (string.IsNullOrEmpty(order.OrderStatus))
+            var order = new Order
             {
-                order.OrderStatus = "Pending";
+                UserId = userId,   // ← from the token, not request.UserId
+                OrderDate = DateTime.Now,
+                OrderStatus = "Pending",
+                TotalAmount = total
+            };
+
+            using var transaction = await context.Database.BeginTransactionAsync();
+            try
+            {
+                context.Orders.Add(order);
+                await context.SaveChangesAsync();
+
+                foreach (var ticket in ticketsToCreate)
+                {
+                    ticket.OrderId = order.OrderId;
+                    context.Tickets.Add(ticket);
+                }
+                await context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
             }
 
-            // add order to database
-            context.Orders.Add(order);
-            context.SaveChanges();
-
-            // send email notification
-            string subject = $"Your HexaCode Order #{order.OrderId} - Confimation";
+            string subject = $"Your HexaCode Order #{order.OrderId} - Confirmation";
             string body = $"Hi {user.UserName}\n\n" +
                 $"Thank you for your order!\n\n" +
                 $"Order ID: {order.OrderId}\n" +
@@ -63,7 +113,6 @@ namespace Project_Solutions.Controllers
                 $"See you at the event!\n\n" +
                 $"HexaCode Team";
 
-            // send it
             try
             {
                 await emailService.SendEmailAsync(user.Email, subject, body);
@@ -73,7 +122,7 @@ namespace Project_Solutions.Controllers
                 Console.WriteLine($"Email failed for order {order.OrderId}: {ex.Message}");
             }
 
-            return Ok($"Order added successfully with id: {order.OrderId}. Confirmation email sent to {user.Email}");
+            return Ok(new { orderId = order.OrderId, totalAmount = order.TotalAmount });
         }
 
         // PUT: Full update
@@ -144,7 +193,7 @@ namespace Project_Solutions.Controllers
 
         // GET (list) includes User, Tickets and Payment
         [HttpGet("GetAllOrders")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetAllOrders()
         {
             List<Order> orders = context.Orders
@@ -158,7 +207,7 @@ namespace Project_Solutions.Controllers
 
         // GET by id
         [HttpGet("GetOrderById")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetOrderById(int id)
         {
             Order order = context.Orders
@@ -179,7 +228,7 @@ namespace Project_Solutions.Controllers
 
         // GET by user id
         [HttpGet("GetOrdersByUserId")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetOrdersByUserId(int userId)
         {
             List<Order> orders = context.Orders
@@ -193,15 +242,15 @@ namespace Project_Solutions.Controllers
 
         // GET revenue summary from confirmed orders
         [HttpGet("GetRevenueSummary")]
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetRevenueSummary()
         {
-            List<Order> confimredOrders = context.Orders
+            List<Order> confirmedOrders = context.Orders
                 .Where(o => o.OrderStatus == "Confirmed")
                 .ToList();
 
-            decimal totalRevenue = confimredOrders.Sum(o => o.TotalAmount);
-            int orderCount = confimredOrders.Count;
+            decimal totalRevenue = confirmedOrders.Sum(o => o.TotalAmount);
+            int orderCount = confirmedOrders.Count;
             decimal averageOrder = orderCount > 0 ? totalRevenue / orderCount : 0;
 
             List<Order> recentOrders = context.Orders

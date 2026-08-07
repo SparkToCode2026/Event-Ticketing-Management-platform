@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project_Solutions.Data;
+using Project_Solutions.Helpers;
 using Project_Solutions.Models;
+using Project_Solutions.Services.Email;
+using System.Security.Claims;
 
 namespace Project_Solutions.Controllers
 {
@@ -9,29 +13,77 @@ namespace Project_Solutions.Controllers
     [Route("Payment")]
     public class PaymentController : ControllerBase
     {
-
-        // The DbContext is our connection to SQL Server.
         private readonly AppDbContext context;
+        private readonly IEmailService emailService;
 
-        public PaymentController(AppDbContext _context)
+        public PaymentController(AppDbContext _context, IEmailService _emailService)
         {
             context = _context;
+            emailService = _emailService;
         }
 
 
-        // Create a new payment
+        // Create a new payment — called by the Attendee who owns the order
         [HttpPost("AddPayment")]
-        public IActionResult AddPayment([FromBody] Payment p)
+        [Authorize]
+        public async Task<IActionResult> AddPayment([FromBody] PaymentRequest request)
         {
-            context.Payments.Add(p);
+            var order = context.Orders.FirstOrDefault(o => o.OrderId == request.OrderId);
+            if (order == null)
+                return NotFound("Order not found.");
+
+            var existingPayment = context.Payments
+                .FirstOrDefault(existing => existing.OrderId == request.OrderId);
+            if (existingPayment != null)
+                return BadRequest("This order already has a payment.");
+
+            var payment = new Payment
+            {
+                PaymentMethod = request.PaymentMethod,
+                OrderId = request.OrderId,
+                PaymentAmount = order.TotalAmount,
+                PaymentStatus = "Completed",
+                PaymentDate = DateTime.Now
+            };
+
+            context.Payments.Add(payment);
+
+            order.OrderStatus = "Confirmed";
+
             context.SaveChanges();
 
-            return Ok(p);
+            var user = context.Users.FirstOrDefault(u => u.UserId == order.UserId);
+
+            if (user != null)
+            {
+                string subject = $"Payment Confirmed - Order #{order.OrderId}";
+                string body = $"Hi {user.UserName}\n\n" +
+                    $"We've received your payment. Here are the details:\n\n" +
+                    $"Order ID: {order.OrderId}\n" +
+                    $"Payment Method: {payment.PaymentMethod}\n" +
+                    $"Amount Paid: {payment.PaymentAmount:F2} OMR\n" +
+                    $"Payment Date: {payment.PaymentDate:yyyy-MM-dd HH:mm}\n" +
+                    $"Order Status: {order.OrderStatus}\n\n" +
+                    $"Your tickets are confirmed. See you at the event!\n\n" +
+                    $"HexaCode Team";
+
+                try
+                {
+                    await emailService.SendEmailAsync(user.Email, subject, body);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Email failed for payment {payment.PaymentId}: {ex.Message}");
+                }
+            }
+
+            return Ok(payment);
         }
 
 
         // Update payment
         [HttpPut("UpdatePayment")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult UpdatePayment(int id, [FromBody] Payment p)
         {
             var paymentData = context.Payments
@@ -53,6 +105,7 @@ namespace Project_Solutions.Controllers
 
         // Update payment status only
         [HttpPatch("UpdatePaymentStatus")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult UpdatePaymentStatus(int id, [FromBody] string status)
         {
             var paymentData = context.Payments
@@ -63,6 +116,13 @@ namespace Project_Solutions.Controllers
 
             paymentData.PaymentStatus = status;
 
+            if (status == "Refunded" || status == "Failed")
+            {
+                var order = context.Orders.FirstOrDefault(o => o.OrderId == paymentData.OrderId);
+                if (order != null)
+                    order.OrderStatus = "Pending";
+            }
+
             context.SaveChanges();
 
             return Ok(paymentData);
@@ -71,6 +131,7 @@ namespace Project_Solutions.Controllers
 
         // Delete payment
         [HttpDelete("DeletePayment")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult DeletePayment(int id)
         {
             var paymentData = context.Payments
@@ -88,6 +149,7 @@ namespace Project_Solutions.Controllers
 
         // Get all payments with order details
         [HttpGet("GetAllPayments")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetAllPayments()
         {
             var payments = context.Payments
@@ -100,6 +162,7 @@ namespace Project_Solutions.Controllers
 
         // Get payment by id
         [HttpGet("GetPaymentById")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult GetPaymentById(int id)
         {
             var payment = context.Payments
@@ -115,6 +178,7 @@ namespace Project_Solutions.Controllers
 
         // Get payments by status
         [HttpGet("FilterPayments")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult FilterPayments(string status)
         {
             var payments = context.Payments
@@ -127,6 +191,7 @@ namespace Project_Solutions.Controllers
 
         // Sort payments by amount
         [HttpGet("SortPayments")]
+        [Authorize(Roles = Roles.Admin)]
         public IActionResult SortPayments()
         {
             var payments = context.Payments
@@ -135,6 +200,5 @@ namespace Project_Solutions.Controllers
 
             return Ok(payments);
         }
-
     }
 }
