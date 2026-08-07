@@ -12,8 +12,8 @@ using Project_Solutions.Data;
 namespace Project_Solutions.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260806123953_FixTotalAmountType")]
-    partial class FixTotalAmountType
+    [Migration("20260807113449_SyncModelsAfterMerge")]
+    partial class SyncModelsAfterMerge
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -366,8 +366,7 @@ namespace Project_Solutions.Migrations
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
                         .IsRequired()
