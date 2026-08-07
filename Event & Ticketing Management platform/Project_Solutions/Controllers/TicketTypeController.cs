@@ -20,7 +20,7 @@ namespace Project_Solutions.Controllers
  
         // GET: api/TicketType
         [HttpGet]
-        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<TicketType>>> GetTicketTypes()
         {
             return await _context.TicketTypes.ToListAsync();
@@ -28,7 +28,7 @@ namespace Project_Solutions.Controllers
  
         // GET: api/TicketType/5
         [HttpGet("{id}")]
-        [Authorize(Roles = Roles.Admin)]
+        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public async Task<ActionResult<TicketType>> GetTicketType(int id)
         {
             var ticketType = await _context.TicketTypes.FindAsync(id);
@@ -43,7 +43,7 @@ namespace Project_Solutions.Controllers
  
         // GET: api/TicketType/ByTicket/5
         [HttpGet("ByTicket/{ticketId}")]
-        [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<TicketType>>> GetTicketTypesByTicket(int ticketId)
         {
             var ticketTypes = await _context.TicketTypes

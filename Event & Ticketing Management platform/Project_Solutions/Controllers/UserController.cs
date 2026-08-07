@@ -39,7 +39,7 @@ namespace Project_Solutions.Controllers
         // Admin-only: changes a user's role
         [HttpPatch("{id}/role")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> UpdateRole(int id, string newRole)
+        public async Task<IActionResult> UpdateRole(int id, UpdateRoleRequest request)
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null)
@@ -47,7 +47,7 @@ namespace Project_Solutions.Controllers
                return NotFound(); 
             }
 
-            user.Role = newRole;
+            user.Role = request.Role;
             await _context.SaveChangesAsync();
             return Ok(user);
         }
