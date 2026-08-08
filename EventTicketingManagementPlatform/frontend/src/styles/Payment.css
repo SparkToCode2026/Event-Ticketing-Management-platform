@@ -1,0 +1,200 @@
+.payment-page {
+  min-height: 85vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  padding: 50px 20px;
+
+  background: linear-gradient(
+    135deg,
+    #eef2ff,
+    #fdf2f8
+  );
+}
+
+
+/* Page Title */
+
+.payment-page h1 {
+  color: #1e293b;
+
+  font-size: 34px;
+
+  margin-bottom: 30px;
+}
+
+
+/* Payment Card */
+
+.payment-card {
+  width: 100%;
+  max-width: 500px;
+
+  background: white;
+
+  padding: 40px;
+
+  border-radius: 24px;
+
+  box-shadow:
+    0 15px 40px rgba(15, 23, 42, 0.1);
+}
+
+
+.payment-card h2 {
+  text-align: center;
+
+  margin-bottom: 25px;
+
+  color: #1e293b;
+
+  font-size: 22px;
+}
+
+
+/* Payment Summary */
+
+.summary-box {
+  background: linear-gradient(
+    135deg,
+    #f8fafc,
+    #f8f7ff
+  );
+
+  padding: 20px;
+
+  border-radius: 18px;
+
+  margin-bottom: 25px;
+
+  border: 1px solid #e2e8f0;
+}
+
+
+.summary-box p {
+  margin: 8px 0;
+
+  color: #64748b;
+
+  font-size: 14px;
+}
+
+
+.summary-box strong {
+  display: block;
+
+  margin-top: 8px;
+
+  font-size: 18px;
+
+  color: #1e293b;
+}
+
+
+/* Form */
+
+.payment-card label {
+  display: block;
+
+  margin-top: 16px;
+
+  margin-bottom: 7px;
+
+  color: #334155;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+
+.payment-card input,
+.payment-card select {
+  width: 100%;
+
+  padding: 13px 14px;
+
+  border-radius: 12px;
+
+  border: 1px solid #dbe1ea;
+
+  background: white;
+
+  font-size: 14px;
+
+  outline: none;
+
+  transition: 0.2s;
+}
+
+
+.payment-card input:focus,
+.payment-card select:focus {
+  border-color: #facc15;
+
+  box-shadow:
+    0 0 0 3px rgba(250, 204, 21, 0.15);
+}
+
+
+/* Pay Button */
+
+.payment-card button {
+  width: 100%;
+
+  margin-top: 28px;
+
+  padding: 15px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  background: linear-gradient(
+    135deg,
+    #fde047,
+    #facc15
+  );
+
+  color: #1e293b;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+
+.payment-card button:hover {
+  background: #eab308;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 22px rgba(234, 179, 8, 0.25);
+}
+
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+  .payment-page {
+    padding: 30px 15px;
+  }
+
+  .payment-card {
+    padding: 25px;
+  }
+
+  .payment-page h1 {
+    font-size: 28px;
+  }
+
+}

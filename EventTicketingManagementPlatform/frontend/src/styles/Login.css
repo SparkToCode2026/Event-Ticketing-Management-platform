@@ -1,0 +1,215 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+/* Page */
+
+.login-container {
+  width: 100%;
+
+  min-height: 85vh;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  padding: 40px 20px;
+
+  background: linear-gradient(
+    135deg,
+    #eef2ff,
+    #fdf2f8
+  );
+}
+
+
+/* Login Card */
+
+.login-box {
+  width: 100%;
+
+  max-width: 420px;
+
+  background: white;
+
+  padding: 40px;
+
+  border-radius: 24px;
+
+  box-shadow:
+    0 15px 40px rgba(15, 23, 42, 0.1);
+}
+
+
+/* Heading */
+
+.login-box h1 {
+  text-align: center;
+
+  margin-bottom: 8px;
+
+  color: #1e293b;
+
+  font-size: 32px;
+}
+
+
+.login-box .login-subtitle {
+  text-align: center;
+
+  color: #64748b;
+
+  font-size: 14px;
+
+  margin-bottom: 30px;
+}
+
+
+/* Form */
+
+.login-box form {
+  display: flex;
+
+  flex-direction: column;
+}
+
+
+.input-group {
+  display: flex;
+
+  flex-direction: column;
+
+  margin-bottom: 16px;
+}
+
+
+.input-group label {
+  margin-bottom: 7px;
+
+  color: #334155;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+
+/* Inputs */
+
+.login-box input {
+  width: 100%;
+
+  padding: 13px 14px;
+
+  border: 1px solid #dbe1ea;
+
+  border-radius: 12px;
+
+  background: white;
+
+  font-size: 14px;
+
+  outline: none;
+
+  transition: 0.2s;
+}
+
+
+.login-box input:focus {
+  border-color: #facc15;
+
+  box-shadow:
+    0 0 0 3px rgba(250, 204, 21, 0.15);
+}
+
+
+/* Login Button */
+
+.login-box button {
+  width: 100%;
+
+  margin-top: 8px;
+
+  padding: 14px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  background: linear-gradient(
+    135deg,
+    #fde047,
+    #facc15
+  );
+
+  color: #1e293b;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+
+.login-box button:hover {
+  background: #eab308;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 22px rgba(234, 179, 8, 0.25);
+}
+
+
+/* Register Link */
+
+.login-box p {
+  margin-top: 22px;
+
+  text-align: center;
+
+  color: #64748b;
+
+  font-size: 14px;
+}
+
+
+.login-box a {
+  color: #b45309;
+
+  text-decoration: none;
+
+  font-weight: 700;
+}
+
+
+.login-box a:hover {
+  text-decoration: underline;
+}
+
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+  .login-container {
+    padding: 30px 15px;
+  }
+
+  .login-box {
+    padding: 28px 24px;
+  }
+
+  .login-box h1 {
+    font-size: 28px;
+  }
+
+}

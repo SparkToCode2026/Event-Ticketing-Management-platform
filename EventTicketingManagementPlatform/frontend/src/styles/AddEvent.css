@@ -1,0 +1,57 @@
+.add-event-page {
+  max-width: 700px;
+  margin: 50px auto;
+  padding: 30px;
+}
+
+.add-event-page h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.add-event-page form {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.input-group textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.add-event-page button {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-event-page button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

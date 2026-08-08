@@ -104,7 +104,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // ==========================================================
-// 6. CORS (optional but recommended) — allows the frontend
+// 6. CORS — allows the frontend
 //    (wwwroot, served from the same app) to call the API
 //    without being blocked by the browser
 // ==========================================================

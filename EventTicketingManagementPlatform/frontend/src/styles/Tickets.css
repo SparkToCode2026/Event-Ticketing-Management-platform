@@ -1,0 +1,197 @@
+
+.tickets-page {
+  min-height: 85vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  padding: 50px 20px;
+
+  background: linear-gradient(
+    135deg,
+    #eef2ff,
+    #fdf2f8
+  );
+}
+
+
+/* Page Title */
+
+.tickets-page h1 {
+  color: #1e293b;
+
+  font-size: 34px;
+
+  margin-bottom: 30px;
+}
+
+
+/* Ticket Card */
+
+.ticket-card {
+  width: 100%;
+  max-width: 500px;
+
+  background: white;
+
+  padding: 40px;
+
+  border-radius: 24px;
+
+  box-shadow:
+    0 15px 40px rgba(15, 23, 42, 0.1);
+}
+
+
+.ticket-card h2 {
+  text-align: center;
+
+  color: #1e293b;
+
+  margin-bottom: 25px;
+
+  font-size: 20px;
+}
+
+
+/* Ticket Options */
+
+.ticket-option {
+  display: flex;
+
+  align-items: center;
+
+  gap: 15px;
+
+  background: #f8fafc;
+
+  padding: 18px;
+
+  margin-bottom: 15px;
+
+  border-radius: 16px;
+
+  cursor: pointer;
+
+  transition: 0.25s;
+
+  border: 2px solid transparent;
+}
+
+
+.ticket-option:hover {
+  border-color: #facc15;
+
+  background: #fffbeb;
+
+  transform: translateY(-2px);
+}
+
+
+/* Radio */
+
+.ticket-option input {
+  width: 20px;
+
+  height: 20px;
+
+  accent-color: #facc15;
+
+  cursor: pointer;
+}
+
+
+/* Ticket Content */
+
+.ticket-option div {
+  flex: 1;
+}
+
+
+.ticket-option h3 {
+  margin: 0;
+
+  color: #1e293b;
+
+  font-size: 16px;
+}
+
+
+.ticket-option p {
+  margin: 5px 0 0;
+
+  color: #64748b;
+
+  font-size: 14px;
+}
+
+
+.ticket-option span {
+  font-weight: 700;
+
+  color: #1e293b;
+
+  font-size: 17px;
+}
+
+
+/* Continue Button */
+
+.continue-button {
+  width: 100%;
+
+  margin-top: 15px;
+
+  padding: 15px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  background: linear-gradient(
+    135deg,
+    #fde047,
+    #facc15
+  );
+
+  color: #1e293b;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+
+.continue-button:hover {
+  background: #eab308;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 10px 22px rgba(234, 179, 8, 0.25);
+}
+
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+  .tickets-page {
+    padding: 30px 15px;
+  }
+
+  .ticket-card {
+    padding: 25px;
+  }
+
+  .tickets-page h1 {
+    font-size: 28px;
+  }
+
+}
