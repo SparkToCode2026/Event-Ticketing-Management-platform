@@ -1,6 +1,8 @@
+// Login.jsx
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import "../styles/Login.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -18,7 +20,7 @@ export default function Login() {
 
     try {
       await login(email, password);
-      navigate("/"); // redirect after successful login
+      navigate("/");
     } catch (err) {
       setError(err.message || "Login failed. Please check your credentials.");
     } finally {
@@ -27,44 +29,45 @@ export default function Login() {
   }
 
   return (
-    <div className="container mt-5" style={{ maxWidth: "400px" }}>
-      <h2 className="mb-4">Login</h2>
+    <div className="login-container">
+      <div className="login-box">
+        <h1>Welcome Back</h1>
+        <p className="login-subtitle">Login to your account to continue</p>
 
-      {error && <div className="alert alert-danger">{error}</div>}
+        {error && <p className="error-text">{error}</p>}
 
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">Email</label>
-          <input
-            type="email"
-            id="email"
-            className="form-control"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="input-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">Password</label>
-          <input
-            type="password"
-            id="password"
-            className="form-control"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
+          <div className="input-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
 
-        <button type="submit" className="btn btn-primary w-100" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
+          <button type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
 
-      <p className="mt-3 text-center">
-        Don't have an account? <Link to="/register">Register</Link>
-      </p>
+        <p>
+          Don't have an account? <Link to="/register">Register</Link>
+        </p>
+      </div>
     </div>
   );
 }
