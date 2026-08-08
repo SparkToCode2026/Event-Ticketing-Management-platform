@@ -109,11 +109,11 @@ namespace Project_Solutions.Controllers
 
         //7: get upcoming events
         [HttpGet("GetUpcomingEvents")]
-        [Authorize]
         public List<Event> GetUpcomingEvents()
         {
             return _appDbContext.Events
                 .Where(e => e.EventDate >= DateTime.Now)
+                .Include(e => e.Venue)
                 .ToList();
         }
 
