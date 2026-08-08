@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import "../styles/Navbar.css";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -11,78 +12,40 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div className="container">
-        <Link className="navbar-brand" to="/">
-          HexaCode
-        </Link>
+    <nav className="navbar">
+      <Link className="logo" to="/">
+        Hexa<span>Code</span>
+      </Link>
 
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+      <div className="nav-links">
+        <Link to="/events">Events</Link>
+        <Link to="/venues">Venues</Link>
+        <Link to="/contact">Contact</Link>
 
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav me-auto">
-            <li className="nav-item">
-              <Link className="nav-link" to="/events">Events</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/venues">Venues</Link>
-            </li>
+        {user && <Link to="/orders">My Orders</Link>}
+        {user?.role === "Organizer" && (
+          <>
+            <Link to="/my-events">My Events</Link>
+            <Link to="/add-event">Add Event</Link>
+          </>
+        )}
+        {user?.role === "Admin" && <Link to="/admin">Admin Panel</Link>}
+      </div>
 
-            {user && (
-              <li className="nav-item">
-                <Link className="nav-link" to="/orders">My Orders</Link>
-              </li>
-            )}
-
-            {user?.role === "Organizer" && (
-              <li className="nav-item">
-                <Link className="nav-link" to="/my-events">My Events</Link>
-              </li>
-            )}
-
-            {user?.role === "Admin" && (
-              <li className="nav-item">
-                <Link className="nav-link" to="/admin">Admin Panel</Link>
-              </li>
-            )}
-          </ul>
-
-          <ul className="navbar-nav">
-            {user ? (
-              <>
-                <li className="nav-item">
-                  <span className="nav-link text-light">
-                    Hi, {user.userName}
-                  </span>
-                </li>
-                <li className="nav-item">
-                  <button
-                    className="btn btn-outline-light ms-2"
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </button>
-                </li>
-              </>
-            ) : (
-              <>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/login">Login</Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/register">Register</Link>
-                </li>
-              </>
-            )}
-          </ul>
-        </div>
+      <div className="nav-buttons">
+        {user ? (
+          <>
+            <span className="nav-greeting">Hi, {user.userName}</span>
+            <button className="login-btn" onClick={handleLogout}>
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <Link className="login-btn" to="/login">Login</Link>
+            <Link className="register-btn" to="/register">Register</Link>
+          </>
+        )}
       </div>
     </nav>
   );
