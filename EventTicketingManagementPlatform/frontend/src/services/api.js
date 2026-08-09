@@ -18,11 +18,20 @@ export async function apiRequest(endpoint, method = "GET", body = null) {
     body: body ? JSON.stringify(body) : null,
   });
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => null);
-    throw new Error(errorData?.title || "Request failed");
+    const text = await response.text();
+
+  let data = null;
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = text;
+    }
   }
 
-  if (response.status === 204) return null;
-  return response.json();
+  if (!response.ok) {
+    throw new Error(data?.title || data || `Request failed (${response.status})`);
+  }
+
+  return data;
 }

@@ -21,7 +21,7 @@ import AdminEventCategories from "./pages/admin/AdminEventCategories";
 import AdminVenues from "./pages/admin/AdminVenues";
 import AdminSpeakers from "./pages/admin/AdminSpeakers";
 import AdminTicketTypes from "./pages/admin/AdminTicketTypes";
-import AdminTickets from "./pages/Admin/AdminTickets.jsx";
+import AdminTickets from "./pages/Admin/AdminTickets";
 import AdminOrders from "./pages/admin/AdminOrders";
 import AdminPayments from "./pages/admin/AdminPayments";
 import AdminReviews from "./pages/admin/AdminReviews";

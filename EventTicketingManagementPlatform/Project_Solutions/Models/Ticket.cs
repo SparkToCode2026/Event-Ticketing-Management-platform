@@ -8,7 +8,6 @@ namespace Project_Solutions.Models
     public class Ticket
     {
         [Key]
-        [JsonIgnore]
         public int TicketId { get; set; }
         public Boolean IsUsed { get; set; }
         public DateTime IssuedAt { get; set; }

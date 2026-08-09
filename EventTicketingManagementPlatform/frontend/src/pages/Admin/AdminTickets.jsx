@@ -1,4 +1,4 @@
-import React, { cache, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { apiRequest } from '../../services/api'
 import '../../styles/AdminTickets.css'
 
@@ -32,7 +32,7 @@ function AdminTickets() {
 
   async function loadStats() {
     try {
-      const data = await apiRequest("/Ticket/GetTicketUsageSatistics")
+      const data = await apiRequest("/Ticket/GetTicketUsageStatistics")
       setStats(data)
     } catch (error) {
       setStats(null)
@@ -66,14 +66,14 @@ function AdminTickets() {
 
   const visibleTickets = tickets.filter((t) => {
     if (usageFilter === "Used" && !t.isUsed) return false
-    if (usageFilter === "Valid" && !t.isUsed) return false
+    if (usageFilter === "Valid" && t.isUsed) return false
     if (search && String(t.orderId) !== search.trim()) return false
     return true
   })
 
   if (loading) {
     return (
-      <div className='admin-ticket-container'>
+     <div className='admin-tickets-container'>
         <p>Loading tickets...</p>
       </div>
     )

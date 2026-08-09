@@ -8,7 +8,6 @@ namespace Project_Solutions.Models
     public class Order
     {
         [Key]
-        [JsonIgnore]
         public int OrderId { get; set; }
         [Required]
         public decimal TotalAmount { get; set; }
