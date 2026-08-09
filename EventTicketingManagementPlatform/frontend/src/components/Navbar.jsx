@@ -14,7 +14,7 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <Link className="logo" to="/">
-        Hexa<span>Code</span>
+        Spark<span>Events</span>
       </Link>
 
       <div className="nav-links">
@@ -23,6 +23,7 @@ export default function Navbar() {
         <Link to="/contact">Contact</Link>
 
         {user && <Link to="/orders">My Orders</Link>}
+        {user && <Link to="/profile">My Profile</Link>}
         {user?.role === "Organizer" && (
           <>
             <Link to="/my-events">My Events</Link>
