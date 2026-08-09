@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import { apiRequest } from '../services/api'
+import "../styles/Orders.css"
 
 function Orders() {
 
@@ -19,6 +20,7 @@ function Orders() {
       navigate("/login")
       return
     }
+    loadOrders()
   }, [user])
 
   async function loadOrders() {

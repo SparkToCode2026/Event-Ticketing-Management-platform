@@ -1,4 +1,4 @@
-.order-page {
+.orders-page {
   min-height: 100vh;
   padding: 60px 30px;
   background: linear-gradient(
@@ -153,7 +153,7 @@
   border-top: 1px solid #f1f5f9;
 }
 
-.order-empty {
+.orders-empty {
   text-align: center;
   color: #64748b;
 }
@@ -171,6 +171,13 @@
   color: #1e293b;
   font-weight: 700;
   cursor: pointer;
+}
+
+.error-text {
+  color: #dc2626;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 @media (max-width: 600px) {

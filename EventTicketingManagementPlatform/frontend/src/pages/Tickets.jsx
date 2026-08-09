@@ -53,7 +53,7 @@ function Tickets() {
     setError("")
     try{
       const order = await apiRequest("/Order/AddOrder", "POST", {
-        items: [{ ticketTypeId: setSelectedType.ticketTypeId, quantity }]
+        items: [{ ticketTypeId: selectedType.ticketTypeId, quantity }]
       })
 
       navigate("/payment", {
