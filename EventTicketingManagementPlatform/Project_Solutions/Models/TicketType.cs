@@ -7,7 +7,6 @@ namespace Project_Solutions.Models
     public class TicketType
     {
         [Key]
-        [JsonIgnore]
         public int TicketTypeId { get; set; }
 
         [Required, MaxLength(45)]

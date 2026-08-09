@@ -21,11 +21,12 @@ import AdminEventCategories from "./pages/admin/AdminEventCategories";
 import AdminVenues from "./pages/admin/AdminVenues";
 import AdminSpeakers from "./pages/admin/AdminSpeakers";
 import AdminTicketTypes from "./pages/admin/AdminTicketTypes";
-import AdminTickets from "./pages/Admin/AdminTickets.jsx";
+import AdminTickets from "./pages/Admin/AdminTickets";
 import AdminOrders from "./pages/admin/AdminOrders";
 import AdminPayments from "./pages/admin/AdminPayments";
 import AdminReviews from "./pages/admin/AdminReviews";
 import AdminPromotions from "./pages/admin/AdminPromotions";
+import Orders from "./pages/Orders";
 import Profile from "./pages/Profile";
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
           <Route path="/events" element={<Events />} />
           <Route path="/events/:id" element={<EventDetails />} />
           <Route path="/tickets/:id" element={<Tickets />} />
+          <Route path="/orders" element={<PrivateRoute><Orders></Orders></PrivateRoute>} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/add-event" element={<AddEvent />} />

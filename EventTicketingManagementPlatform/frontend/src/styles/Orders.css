@@ -1,0 +1,200 @@
+.orders-page {
+  min-height: 100vh;
+  padding: 60px 30px;
+  background: linear-gradient(
+    135deg,
+    #eef2ff,
+    #fdf2f8,
+  );
+}
+
+.order-page h1 {
+  text-align: center;
+  margin: 0 0 45px;
+  font-size: 38px;
+  color: #1e293b;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.order-card {
+  background: white;
+  border-radius: 22px;
+  padding: 26px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.1);
+  transition: 0.3s;
+}
+
+.order-card:hover {
+  transform: translate(-4px);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.15);
+}
+
+.order-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.order-header h2 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 20px;
+}
+
+.order-header p {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.status {
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status.pending {
+  background: #fef9c3;
+  color: #a16207;
+}
+
+.status.confirmed {
+  background: #fee2e2;
+  color: #15803d;
+}
+
+.status.cancelled {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.order-body {
+  display: flex;
+  gap: 30px;
+  margin-top: 16px;
+}
+
+.order-body p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.order-body strong {
+  color: #1e293b;
+}
+
+.order-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.order-actions button {
+  padding: 11px 22px;
+  border: none;
+  border-radius: 13px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.details-btn {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.details-btn:hover {
+  background: #e2e8f0;
+}
+
+.pay-btn {
+  background: linear-gradient(
+    135deg,
+    #fde047,
+    #facc15,
+  );
+  color: #1e293b;
+}
+
+.pay-btn:hover {
+  background: #eab308;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(234, 179, 8, 0.25);
+}
+
+.tickets-table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tickets-table th {
+  background: #f8fafc;
+  color: #1e293b;
+  text-align: left;
+  padding: 12px;
+}
+
+.tickets-table td {
+  padding: 12px;
+  color: #64748b;
+  border-top: 1px solid #f1f5f9;
+}
+
+.orders-empty {
+  text-align: center;
+  color: #64748b;
+}
+
+.order-empty button {
+  margin-top: 16px;
+  padding: 13px 26px;
+  border: none;
+  border-radius: 13px;
+  background: linear-gradient(
+    135deg,
+    #fde047,
+    #facc15
+  );
+  color: #1e293b;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.error-text {
+  color: #dc2626;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+  .order-page {
+    padding: 40px 15px;
+  }
+
+  .order-page h1 {
+    font-size: 30px;
+    margin-bottom: 30px;
+  }
+
+  .order-header {
+    flex-direction: column;
+  }
+  .order-body {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
