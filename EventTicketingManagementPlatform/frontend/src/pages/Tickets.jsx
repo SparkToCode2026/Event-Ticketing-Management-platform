@@ -35,7 +35,7 @@ function Tickets() {
     }
   }
 
-  async function handleContiune() {
+  async function handleContinue() {
     if (!user) {
       navigate("/login")
       return
@@ -48,26 +48,28 @@ function Tickets() {
       setError("Quantity must be at least 1.")
       return
     }
+
+    setSaving(true)
+    setError("")
+    try{
+      const order = await apiRequest("/Order/AddOrder", "POST", {
+        items: [{ ticketTypeId: setSelectedType.ticketTypeId, quantity }]
+      })
+
+      navigate("/payment", {
+        state: {
+          orderId: order.orderId,
+          totalAmount: order.totalAmount,
+        }
+      })
+    } catch (error) {
+      setError(error.message || "Failed to create the order.")
+    } finally {
+      setSaving(false)
+    }
   }
 
-  setSaving(true)
-  setError("")
-  try{
-    const order = await apiRequest("/Order/AddOrder", "POST", {
-      items: [{ ticketTypesId: setSelectedType.ticketTypesId, quantity }]
-    })
-
-    navigate("/payment", {
-      state: {
-        orderId: order.orderId,
-        totalAmount: order.totalAmount,
-      }
-    })
-  } catch (error) {
-    setError(error.message || "Failed to create the order.")
-  } finally {
-    setSaving(false)
-  }
+  const total = selectedType ? selectedType.price * quantity : 0
 
   if (loading) {
     return (
@@ -80,18 +82,18 @@ function Tickets() {
     <div className="tickets-page">
       <h1>Choose Your Ticket</h1>
 
-      <div className="Ticket-card">
+      <div className="ticket-card">
         <h2>Available Ticket Types</h2>
         {error && <p className='error-text'>{error}</p>}
         {ticketTypes.length === 0 ? (
           <p>No tickets are Available for this event yet.</p>
         ) : (
           ticketTypes.map((t) => (
-            <label className='ticket-option' key={t.ticketTypesId}>
+            <label className='ticket-option' key={t.ticketTypeId}>
               <input
                 type='radio'
                 name='ticketType'
-                checked={selectedType?.ticketTypesId === t.ticketTypesId}
+                checked={selectedType?.ticketTypeId === t.ticketTypeId}
                 onChange={() => setSelectedType(t)}
               />
               <div>
@@ -116,14 +118,14 @@ function Tickets() {
                 onChange={(e) => setQuantity(Number(e.target.value))}
               />
             </div>
-            <div className='ticket-toal'>
+            <div className='ticket-total'>
               <span>Total</span>
               <strong>{total.toFixed(2)} OMR</strong>
             </div>
           </>
         )}
 
-        <button className='continue-button' disabled={saving || ticketTypes.length === 0} onClick={handleContiune}>
+        <button className='continue-button' disabled={saving || ticketTypes.length === 0} onClick={handleContinue}>
           {saving ? "Creating order..." : "Continue to Payment"}
         </button>
       </div>
