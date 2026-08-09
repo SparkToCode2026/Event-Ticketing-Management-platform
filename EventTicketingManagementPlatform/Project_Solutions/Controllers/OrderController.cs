@@ -206,24 +206,22 @@ namespace Project_Solutions.Controllers
         }
 
         // GET by id
-        [HttpGet("GetOrderById")]
-        [Authorize(Roles = Roles.Admin)]
+        [HttpGet("GetOrderById/{id}")]
+        [Authorize]
         public IActionResult GetOrderById(int id)
         {
-            Order order = context.Orders
-                .Include(o => o.User)
-                .Include(o => o.Tickets)
-                .Include(o => o.Payment)
-                .FirstOrDefault(o => o.OrderId == id);
+            var order = context.Orders.FirstOrDefault(o => o.OrderId == id);
+            if (order == null) return NotFound();
 
-            if (order == null)
+            var callerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var isAdmin = User.IsInRole(Roles.Admin);
+
+            if (order.UserId != callerId && !isAdmin)
             {
-                return NotFound("Order not found");
+                return Forbid();
             }
-            else
-            {
-                return Ok(order);
-            }
+
+            return Ok(order);
         }
 
         // GET by user id
