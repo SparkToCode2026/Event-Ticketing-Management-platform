@@ -23,7 +23,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // 2. CONTROLLERS — Enables attribute-routed Web API controllers
 //    (everything in the Controllers/ folder)
 // ==========================================================
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
 
 // ==========================================================
 // 3. CUSTOM SERVICES — Register our own services for

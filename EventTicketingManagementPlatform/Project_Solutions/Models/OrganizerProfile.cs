@@ -7,21 +7,17 @@ namespace Project_Solutions.Models
     public class OrganizerProfile
     {
         [Key]
-        [JsonIgnore]
-        public int OrganizerId { get; set; }
+        public int OrganizerId { get; set; }   // removed [JsonIgnore]
 
         [Required, MaxLength(150)]
         public string CompanyName { get; set; }
 
-        // 1:1 profile belong to on user
         [Required]
         public int UserId { get; set; }
+
         [ForeignKey("UserId")]
-        [JsonIgnore]
         public User? User { get; set; }
 
-
-        //1:M relationship with OrganizerProfile and Events
         [JsonIgnore]
         public List<Event>? Events { get; set; }
     }
