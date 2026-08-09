@@ -14,7 +14,7 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <Link className="logo" to="/">
-        Hexa<span>Code</span>
+        Spark<span>Events</span>
       </Link>
 
       <div className="nav-links">
