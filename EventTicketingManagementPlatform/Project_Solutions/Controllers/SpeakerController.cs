@@ -28,6 +28,12 @@ namespace Project_Solutions.Controllers
         [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public IActionResult AddSpeaker([FromBody] SpeakerCreateRequest request)
         {
+            var eventExists = context.Events.Any(e => e.EventId == request.EventId);
+            if (!eventExists)
+            {
+                return BadRequest($"Event with ID {request.EventId} does not exist.");
+            }
+
             var speaker = new Speaker
             {
                 SpeakerName = request.SpeakerName,

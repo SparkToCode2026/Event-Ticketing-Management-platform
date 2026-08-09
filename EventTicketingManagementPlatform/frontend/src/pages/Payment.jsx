@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { apiRequest } from "../services/api";
 import "../styles/Payment.css";
@@ -7,14 +7,29 @@ export default function Payment() {
   const navigate = useNavigate();
   const { orderId } = useParams();
 
+  const [order, setOrder] = useState(null);
+  const [orderLoading, setOrderLoading] = useState(true);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  useEffect(() => {
+    async function loadOrder() {
+      try {
+        const data = await apiRequest(`/Order/GetOrderById/${orderId}`);
+        setOrder(data);
+      } catch (err) {
+        setError("Couldn't load order details.");
+      } finally {
+        setOrderLoading(false);
+      }
+    }
+    loadOrder();
+  }, [orderId]);
+
   async function handlePayment(e) {
     e.preventDefault();
-
     setError("");
     setSuccess("");
     setLoading(true);
@@ -26,10 +41,7 @@ export default function Payment() {
       });
 
       setSuccess("Payment completed successfully!");
-
-      setTimeout(() => {
-        navigate("/orders");
-      }, 1500);
+      setTimeout(() => navigate("/orders"), 1500);
     } catch (err) {
       setError(err.message || "Payment failed. Please try again.");
     } finally {
@@ -49,26 +61,16 @@ export default function Payment() {
           <strong>#{orderId}</strong>
 
           <p>Total Amount</p>
-          <strong>Amount will be shown from the order</strong>
+          <strong>
+            {orderLoading ? "Loading..." : order ? `${order.totalAmount?.toFixed(2)} OMR` : "—"}
+          </strong>
         </div>
 
-        {error && (
-          <p className="error-text">
-            {error}
-          </p>
-        )}
-
-        {success && (
-          <p className="success-text">
-            {success}
-          </p>
-        )}
+        {error && <p className="error-text">{error}</p>}
+        {success && <p className="success-text">{success}</p>}
 
         <form onSubmit={handlePayment}>
-          <label htmlFor="paymentMethod">
-            Payment Method
-          </label>
-
+          <label htmlFor="paymentMethod">Payment Method</label>
           <select
             id="paymentMethod"
             value={paymentMethod}

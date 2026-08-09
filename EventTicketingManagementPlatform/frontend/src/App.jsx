@@ -42,7 +42,7 @@ function App() {
           <Route path="/events/:id" element={<EventDetails />} />
           <Route path="/tickets/:id" element={<Tickets />} />
           <Route path="/orders" element={<PrivateRoute><Orders></Orders></PrivateRoute>} />
-          <Route path="/payment" element={<Payment />} />
+          <Route path="/payment/:orderId" element={<PrivateRoute><Payment /></PrivateRoute>} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/add-event" element={<AddEvent />} />
           <Route path="/speakers" element={<PrivateRoute allowedRoles={["Organizer", "Admin"]}><AddSpeaker /></PrivateRoute>} />
