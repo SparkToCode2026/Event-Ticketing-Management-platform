@@ -27,6 +27,7 @@ export default function Navbar() {
           <>
             <Link to="/my-events">My Events</Link>
             <Link to="/add-event">Add Event</Link>
+            <Link to="/speakers">AddSpeakers</Link>
           </>
         )}
         {user?.role === "Admin" && <Link to="/admin">Admin Panel</Link>}
