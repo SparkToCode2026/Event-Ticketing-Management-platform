@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { apiRequest } from '../../services/api'
+import "../../styles/AdminOrders.css"
 
-const STATUSES = ["Pending", "Confimed", "Cancelled"]
+const STATUSES = ["Pending", "Confirmed", "Cancelled"]
 
 function AdminOrders() {
 
@@ -23,7 +24,7 @@ function AdminOrders() {
     setLoading(true)
     setError("")
     try {
-      const data = awaitRequest("Order/GetAllOrders")
+      const data = await apiRequest("/Order/GetAllOrders")
       setOrders(data)
     } catch (error) {
       setError(error.message || "Failed to load orders.")
@@ -44,7 +45,7 @@ function AdminOrders() {
   async function handleStatusChange(order, newStatus) {
     setSavingId(order.orderId)
     try {
-      await apiRequest(`/Order.UpdateOrder?id=${order.orderId}`, "PUT", {
+      await apiRequest(`/Order/UpdateOrder?id=${order.orderId}`, "PUT", {
         totalAmount: order.totalAmount,
         orderDate: order.orderDate,
         orderStatus: newStatus,
@@ -86,7 +87,7 @@ function AdminOrders() {
     if (tickets[orderId]) return
 
     try {
-      const data = apiRequest(`/Ticket/GetTicketsByOrderId?orderId=${orderId}`)
+      const data = await apiRequest(`/Ticket/GetTicketsByOrderId?orderId=${orderId}`)
       setTickets((prev) => ({ ...prev, [orderId]: data }))
     } catch (error) {
       alert(error.message || "Failed to load the tikets of this order.")
@@ -152,10 +153,10 @@ function AdminOrders() {
             {visibleOrders.map((o) => (
               <>
                 <tr key={o.orderId}>
-                  <td>#{o,orderId}</td>
+                  <td>#{o.orderId}</td>
                   <td>{o.userId}</td>
                   <td>{new Date(o.orderDate).toLocaleString()}</td>
-                  <td>{o.totalAmount}</td>
+                  <td>{o.totalAmount} OMR</td>
                   <td>
                     <select value={o.orderStatus} disabled={savingId === o.orderId} onChange={(e) => handleStatusChange(o, e.target.value)}>
                       {STATUSES.map((s) => (
