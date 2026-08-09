@@ -19,22 +19,30 @@ namespace Project_Solutions.Controllers
         {
             context = _context;
         }
-        
-        
+
+
         // Create a new speaker
         // Request URL https://localhost:7173/speaker/AddSpeaker
         // Request method => Post and  Request Body 
         [HttpPost("AddSpeaker")]
         [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
-        public IActionResult AddSpeaker([FromBody] Speaker S)
+        public IActionResult AddSpeaker([FromBody] SpeakerCreateRequest request)
         {
-            context.Speakers.Add(S);
+            var speaker = new Speaker
+            {
+                SpeakerName = request.SpeakerName,
+                SpeakerBio = request.SpeakerBio,
+                SpeakerTopic = request.SpeakerTopic,
+                EventId = request.EventId
+            };
+
+            context.Speakers.Add(speaker);
             context.SaveChanges();
 
-            return Ok(S);
+            return Ok(speaker);
         }
-        
-        
+
+
         // Update speaker
         // Request URL https://localhost:7173/speaker/UpdateSpeaker?id=3
         // Request method => Put

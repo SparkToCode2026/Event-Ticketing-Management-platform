@@ -25,4 +25,17 @@ namespace Project_Solutions.Models
         [JsonIgnore]
         public Event Event { get; set; }
     }
+
+    public class SpeakerCreateRequest
+    {
+        [Required, MaxLength(150)]
+        public string SpeakerName { get; set; }
+
+        public string? SpeakerBio { get; set; }
+
+        public string? SpeakerTopic { get; set; }
+
+        [Required]
+        public int EventId { get; set; }
+    }
 }

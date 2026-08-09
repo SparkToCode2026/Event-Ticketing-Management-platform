@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:7173";
+const BASE_URL = "https://localhost:7173";
 
 function getToken() {
   return localStorage.getItem("token");
