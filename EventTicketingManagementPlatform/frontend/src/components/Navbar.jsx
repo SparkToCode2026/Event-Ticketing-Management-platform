@@ -31,7 +31,12 @@ export default function Navbar() {
             <Link to="/speakers">AddSpeakers</Link>
           </>
         )}
-        {user?.role === "Admin" && <Link to="/admin">Admin Panel</Link>}
+        {user?.role === "Admin" && (
+        <>  
+          <Link to="/admin">Admin Panel</Link>
+          <Link to="/speakers">AddSpeakers</Link>
+        </>
+        )}
       </div>
 
       <div className="nav-buttons">
