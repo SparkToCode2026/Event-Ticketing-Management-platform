@@ -23,6 +23,7 @@ export default function Navbar() {
         <Link to="/contact">Contact</Link>
 
         {user && <Link to="/orders">My Orders</Link>}
+        {user && <Link to="/profile">My Profile</Link>}
         {user?.role === "Organizer" && (
           <>
             <Link to="/my-events">My Events</Link>
