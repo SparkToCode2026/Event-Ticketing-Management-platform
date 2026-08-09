@@ -160,4 +160,5 @@ export default function AdminVenuesDemo() {
         </table>
       </div>
   );
+  
 }
