@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project_Solutions.Data;
-using Project_Solutions.Models;
 using Project_Solutions.Helpers;
+using Project_Solutions.Models;
+using System.Security.Claims;
 
 namespace Project_Solutions.Controllers
 {
@@ -21,8 +22,16 @@ namespace Project_Solutions.Controllers
         // Updates a user's Name/Email
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> Update(int id, User updatedUser)
+        public async Task<IActionResult> Update(int id, UpdateUserRequest updatedUser)
         {
+            var callerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var isAdmin = User.IsInRole(Roles.Admin);
+
+            if (callerId != id && !isAdmin)
+            {
+                return Forbid();
+            }
+
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {

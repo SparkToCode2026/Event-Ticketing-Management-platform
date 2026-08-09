@@ -57,4 +57,13 @@ namespace Project_Solutions.Models
         [Required]
         public string Role { get; set; }
     }
+
+    public class UpdateUserRequest
+    {
+        [Required, MaxLength(100)]
+        public string UserName { get; set; }
+
+        [Required, EmailAddress, MaxLength(150)]
+        public string Email { get; set; }
+    }
 }

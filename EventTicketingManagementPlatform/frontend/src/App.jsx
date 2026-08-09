@@ -27,6 +27,7 @@ import AdminPayments from "./pages/admin/AdminPayments";
 import AdminReviews from "./pages/admin/AdminReviews";
 import AdminPromotions from "./pages/admin/AdminPromotions";
 import Orders from "./pages/Orders";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/add-event" element={<AddEvent />} />
           <Route path="/add-speaker/:eventId" element={<AddSpeaker />} />
+          <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
 
           {/* Admin routes */}
           <Route path="/admin" element={<PrivateRoute allowedRoles={["Admin"]}><AdminDashboard /></PrivateRoute>} />
