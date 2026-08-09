@@ -8,7 +8,6 @@ namespace Project_Solutions.Models
     {
         
         [Key]
-        [JsonIgnore]
         public int PaymentId { get; set; }
         [Required]
         public DateTime PaymentDate { get; set; } = DateTime.Now;

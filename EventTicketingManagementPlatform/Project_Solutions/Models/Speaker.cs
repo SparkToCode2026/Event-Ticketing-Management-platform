@@ -9,7 +9,6 @@ namespace Project_Solutions.Models
     {
         
         [Key]
-        [JsonIgnore]
         public int SpeakerId { get; set; }
         [Required, MaxLength(50)]
         public string SpeakerName { get; set; }
