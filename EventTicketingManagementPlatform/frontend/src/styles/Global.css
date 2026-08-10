@@ -4,27 +4,26 @@
   box-sizing: border-box;
 }
 
-
 html,
 body,
 #root {
-
   width: 100%;
   min-height: 100vh;
-
 }
 
-
 body {
-
   font-family: "Poppins", Arial, sans-serif;
-
   background: linear-gradient(
     135deg,
     #eef2ff,
     #fdf2f8
   );
-
   color: #333;
+  transition: background 0.3s ease, color 0.3s ease;
+}
 
+/* Dark Mode */
+html[data-theme="dark"] body {
+  background: #0f172a;
+  color: #f8fafc;
 }
