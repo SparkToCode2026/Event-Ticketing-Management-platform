@@ -52,18 +52,24 @@ namespace Project_Solutions.Controllers
  
             return ticketTypes;
         }
- 
+
         // POST: api/TicketType
         [HttpPost]
         [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]
         public async Task<ActionResult<TicketType>> PostTicketType(TicketType ticketType)
         {
+            var eventExists = await _context.Events.AnyAsync(e => e.EventId == ticketType.EventId);
+            if (!eventExists)
+            {
+                return BadRequest($"Event with ID {ticketType.EventId} does not exist.");
+            }
+
             _context.TicketTypes.Add(ticketType);
             await _context.SaveChangesAsync();
- 
+
             return CreatedAtAction(nameof(GetTicketType), new { id = ticketType.TicketTypeId }, ticketType);
         }
- 
+
         // PUT: api/TicketType/5
         [HttpPut("{id}")]
         [Authorize(Roles = Roles.Organizer + "," + Roles.Admin)]

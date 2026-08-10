@@ -89,6 +89,7 @@ namespace Project_Solutions.Controllers
                 .Include(e => e.Venue)
                 .Include(e => e.Speakers)
                 .Include(e => e.EventCategory)
+                .Include(e => e.OrganizerProfile)
                 .ToList();
         }
 
