@@ -19,7 +19,6 @@ export default function Navbar() {
 
       <div className="nav-links">
         <Link to="/events">Events</Link>
-        <Link to="/venues">Venues</Link>
         <Link to="/contact">Contact</Link>
 
         {user && <Link to="/orders">My Orders</Link>}

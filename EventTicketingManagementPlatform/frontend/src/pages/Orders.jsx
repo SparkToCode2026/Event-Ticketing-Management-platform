@@ -110,20 +110,13 @@ function Orders() {
                   {openOrderId === o.orderId ? "Hide Tickets" : "View Tickets"}
                 </button>
                 {o.orderStatus === "Pending" && (
-                  <button 
-                    className='pay-btn' 
-                    onClick={() => 
-                      navigate("/payment", {
-                        state: {
-                          orderId: o.orderId,
-                          totalAmount: o.totalAmount,
-                        }
-                      })
-                    }
-                  >
-                    Pay Now
-                  </button>
-                )}
+                <button
+                  className='pay-btn'
+                  onClick={() => navigate(`/payment/${o.orderId}`)}
+                >
+                  Pay Now
+                </button>
+              )}
               </div>
               {openOrderId === o.orderId && (
                 <table className='tickets-table'>
