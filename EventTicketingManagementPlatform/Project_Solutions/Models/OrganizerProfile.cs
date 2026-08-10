@@ -18,7 +18,6 @@ namespace Project_Solutions.Models
         [ForeignKey("UserId")]
         public User? User { get; set; }
 
-        [JsonIgnore]
         public List<Event>? Events { get; set; }
     }
 }

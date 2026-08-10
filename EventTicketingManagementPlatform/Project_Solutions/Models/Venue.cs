@@ -5,7 +5,6 @@ namespace Project_Solutions.Models
     public class Venue
     {
         [Key]
-        [JsonIgnore]
         public int VenueId { get; set; }
         
         [Required, MaxLength(150)]
@@ -15,7 +14,6 @@ namespace Project_Solutions.Models
         public string VenueLocation { get; set; }
 
         //1:M one venue can host many events
-        [JsonIgnore]
         public List<Event>? Events { get; set; }
     }
 }
