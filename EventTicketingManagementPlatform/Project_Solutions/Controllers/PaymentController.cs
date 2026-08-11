@@ -200,5 +200,76 @@ namespace Project_Solutions.Controllers
 
             return Ok(payments);
         }
+        
+        
+        
+        ///////////////////////////////////////////////
+        // Payment Statistics
+        [HttpGet("Statistics")]
+        [Authorize(Roles = Roles.Admin)]
+        public IActionResult GetPaymentStatistics()
+        {
+            var currentYear = DateTime.Now.Year;
+            var currentMonth = DateTime.Now.Month;
+
+            var payments = context.Payments
+                .Where(p => p.PaymentStatus == "Completed")
+                .ToList();
+
+            var totalRevenue = payments.Sum(p => p.PaymentAmount);
+
+            var monthlyRevenue = payments
+                .Where(p =>
+                    p.PaymentDate.Year == currentYear &&
+                    p.PaymentDate.Month == currentMonth)
+                .Sum(p => p.PaymentAmount);
+
+            var yearlyRevenue = payments
+                .Where(p => p.PaymentDate.Year == currentYear)
+                .Sum(p => p.PaymentAmount);
+
+            var totalPayments = payments.Count();
+
+            return Ok(new
+            {
+                totalRevenue,
+                monthlyRevenue,
+                yearlyRevenue,
+                totalPayments
+            });
+        }
+        
+        
+        
+        ///////////////////////////////////
+        // Payment statistics by user
+        [HttpGet("UserStatistics")]
+        [Authorize(Roles = Roles.Admin)]
+        public IActionResult GetUserPaymentStatistics()
+        {
+            var statistics = context.Payments
+                .Where(p => p.PaymentStatus == "Completed")
+                .Include(p => p.Order)
+                .ThenInclude(o => o.User)
+                .GroupBy(p => new
+                {
+                    p.Order.UserId,
+                    p.Order.User.UserName
+                })
+                .Select(group => new
+                {
+                    userId = group.Key.UserId,
+                    userName = group.Key.UserName,
+                    totalPaid = group.Sum(p => p.PaymentAmount),
+                    paymentCount = group.Count()
+                })
+                .OrderByDescending(x => x.totalPaid)
+                .ToList();
+
+            return Ok(statistics);
+        }
+        
+        
+        
     }
 }
