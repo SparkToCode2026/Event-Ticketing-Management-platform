@@ -33,7 +33,6 @@ export default function Navbar() {
         {user?.role === "Admin" && (
         <>  
           <Link to="/admin">Admin Panel</Link>
-          <Link to="/speakers">AddSpeakers</Link>
         </>
         )}
       </div>

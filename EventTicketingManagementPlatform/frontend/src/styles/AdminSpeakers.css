@@ -1,0 +1,282 @@
+.admin-speakers-page {
+  min-height: 100vh;
+  padding: 40px 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.speaker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.speaker-header h1 {
+  margin: 0;
+  font-size: 32px;
+  color: #1e293b;
+}
+
+.speaker-header p {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 15px;
+}
+
+.add-speaker-btn {
+  border: none;
+  padding: 12px 22px;
+  border-radius: 13px;
+  background: linear-gradient(
+    135deg,
+    #fde047,
+    #facc15
+  );
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.add-speaker-btn:hover {
+  background: #eab308;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(234, 179, 8, 0.25);
+}
+
+.error-text {
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+}
+
+.loading-text {
+  text-align: center;
+  padding: 60px;
+  color: #64748b;
+  font-size: 16px;
+}
+
+.speaker-form-card {
+  background: white;
+  padding: 28px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+.speaker-form-card h2 {
+  margin: 0 0 24px;
+  color: #1e293b;
+  font-size: 22px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+.input-group label {
+  margin-bottom: 7px;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.input-group input,
+.input-group textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid #dbe1ea;
+  border-radius: 10px;
+  outline: none;
+  font-size: 14px;
+  color: #1e293b;
+  background: white;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+  border-color: #facc15;
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.15);
+}
+
+.input-group textarea {
+  resize: vertical;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.save-btn,
+.cancel-btn {
+  border: none;
+  padding: 11px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.save-btn {
+  background: #1e293b;
+  color: white;
+}
+
+.save-btn:hover {
+  background: #0f172a;
+}
+
+.cancel-btn {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.cancel-btn:hover {
+  background: #e2e8f0;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.speakers-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+}
+
+.speakers-table th,
+.speakers-table td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 14px;
+}
+
+.speakers-table th {
+  background: #f8fafc;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.speakers-table td {
+  color: #64748b;
+}
+
+.speakers-table tr:last-child td {
+  border-bottom: none;
+}
+
+.speakers-table tr:hover {
+  background: #f8fafc;
+}
+
+.speaker-name {
+  color: #1e293b !important;
+  font-weight: 600;
+}
+
+.bio-cell {
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-btn,
+.delete-btn {
+  border: none;
+  padding: 8px 13px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.edit-btn {
+  background: #fef9c3;
+  color: #a16207;
+}
+
+.edit-btn:hover {
+  background: #fef08a;
+}
+
+.delete-btn {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.delete-btn:hover {
+  background: #fecaca;
+}
+
+.empty-state {
+  text-align: center;
+  background: white;
+  padding: 50px 20px;
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.07);
+}
+
+.empty-state p {
+  color: #64748b;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 700px) {
+  .admin-speakers-page {
+    padding: 30px 15px;
+  }
+
+  .speaker-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .speaker-header h1 {
+    font-size: 27px;
+  }
+
+  .add-speaker-btn {
+    width: 100%;
+  }
+
+  .speaker-form-card {
+    padding: 20px;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+  }
+
+  .save-btn,
+  .cancel-btn {
+    width: 100%;
+  }
+
+  .speakers-table {
+    min-width: 850px;
+  }
+}
