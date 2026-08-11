@@ -56,12 +56,8 @@ function Tickets() {
         items: [{ ticketTypeId: selectedType.ticketTypeId, quantity }]
       })
 
-      navigate("/payment", {
-        state: {
-          orderId: order.orderId,
-          totalAmount: order.totalAmount,
-        }
-      })
+      navigate(`/payment/${order.orderId}`)
+
     } catch (error) {
       setError(error.message || "Failed to create the order.")
     } finally {
@@ -126,7 +122,7 @@ function Tickets() {
         )}
 
         <button className='continue-button' disabled={saving || ticketTypes.length === 0} onClick={handleContinue}>
-          {saving ? "Creating order..." : "Continue to Payment"}
+          {saving ? "Creating order..." : "Pay"}
         </button>
       </div>
     </div>
