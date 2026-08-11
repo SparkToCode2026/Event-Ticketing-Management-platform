@@ -241,7 +241,6 @@ namespace Project_Solutions.Controllers
         
         
         ///////////////////////////////////
-        
         // Payment statistics by user
         [HttpGet("UserStatistics")]
         [Authorize(Roles = Roles.Admin)]
