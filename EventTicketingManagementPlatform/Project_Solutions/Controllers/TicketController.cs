@@ -144,7 +144,7 @@ namespace Project_Solutions.Controllers
 
         // GET all ticket for a given Order ID
         [HttpGet("GetTicketsByOrderId")]
-        [Authorize(Roles = Roles.Admin)]
+        [Authorize]
         public IActionResult GetTicketByOrderId(int orderId)
         {
             List<Ticket> tickets = context.Tickets

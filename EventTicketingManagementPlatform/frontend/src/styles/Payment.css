@@ -114,19 +114,13 @@
 .payment-card input,
 .payment-card select {
   width: 100%;
-
   padding: 13px 14px;
-
   border-radius: 12px;
-
   border: 1px solid #dbe1ea;
-
   background: white;
-
+  color: #1e293b;
   font-size: 14px;
-
   outline: none;
-
   transition: 0.2s;
 }
 

@@ -202,7 +202,6 @@ namespace Project_Solutions.Controllers
         }
         
         
-        
         ///////////////////////////////////////////////
         // Payment Statistics
         [HttpGet("Statistics")]
