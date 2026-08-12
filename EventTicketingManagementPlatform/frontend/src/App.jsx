@@ -13,22 +13,23 @@ import Payment from "./pages/Payment";
 import Contact from "./pages/Contact";
 import Chatbot from "./pages/Chatbot";
 import AddSpeaker from "./pages/AddSpeaker";
-import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
-import AdminOrganizers from "./pages/admin/AdminOrganizers";
+import AdminOrganizers from "./pages/Admin/AdminOrganizers";
 import AdminEvents from "./pages/admin/AdminEvents";
-import AdminEventCategories from "./pages/admin/AdminEventCategories";
-import AdminVenues from "./pages/admin/AdminVenues";
-import AdminSpeakers from "./pages/admin/AdminSpeakers";
-import AdminTicketTypes from "./pages/admin/AdminTicketTypes";
+import AdminEventCategories from "./pages/Admin/AdminEventCategories";
+import AdminVenues from "./pages/Admin/AdminVenues";
+import AdminSpeakers from "./pages/Admin/AdminSpeakers";
+import AdminTicketTypes from "./pages/Admin/AdminTicketTypes";
 import AdminTickets from "./pages/Admin/AdminTickets";
 import AdminOrders from "./pages/admin/AdminOrders";
-import AdminPayments from "./pages/admin/AdminPayments";
-import AdminReviews from "./pages/admin/AdminReviews";
-import AdminPromotions from "./pages/admin/AdminPromotions";
+import AdminPayments from "./pages/Admin/AdminPayments";
+import AdminReviews from "./pages/Admin/AdminReviews";
+import AdminPromotions from "./pages/Admin/AdminPromotions";
 import Orders from "./pages/Orders";
 import Profile from "./pages/Profile";
 import { ThemeProvider } from "./context/ThemeContext";
+import MyEvents from "./pages/MyEvents";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
           <Route path="/add-event" element={<AddEvent />} />
           <Route path="/speakers" element={<PrivateRoute allowedRoles={["Organizer", "Admin"]}><AddSpeaker /></PrivateRoute>} />
           <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+          <Route path="/my-events" element={<PrivateRoute allowedRoles={["Organizer", "Admin"]}><MyEvents /></PrivateRoute>} />
 
           {/* Admin routes */}
           <Route path="/admin" element={<PrivateRoute allowedRoles={["Admin"]}><AdminDashboard /></PrivateRoute>} />

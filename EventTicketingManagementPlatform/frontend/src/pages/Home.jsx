@@ -135,13 +135,6 @@ function Home() {
           </div>
         </div>
       </section>
-
-      <section className="cta-section">
-        <h2>Ready to join amazing events?</h2>
-        <Link to="/register">
-          <button>Register Now</button>
-        </Link>
-      </section>
     </div>
   );
 }

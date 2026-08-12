@@ -1,52 +1,72 @@
+// frontend/src/pages/admin/AdminTicketTypes.jsx
 import { useEffect, useState } from "react";
+import { apiRequest } from "../../services/api";
+import "../../styles/AdminUsers.css";
 
-
-function fakeApiRequest(action, payload) {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(payload), 400); 
-  });
-}
-
-export default function AdminTicketTypesDemo() {
+export default function AdminTicketTypes() {
   const [ticketTypes, setTicketTypes] = useState([]);
+  const [events, setEvents] = useState({});
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const [newTicketId, setNewTicketId] = useState("");
   const [newCategory, setNewCategory] = useState("");
   const [newPrice, setNewPrice] = useState("");
   const [newBenefits, setNewBenefits] = useState("");
+  const [newEventId, setNewEventId] = useState("");
   const [creating, setCreating] = useState(false);
 
   const [editingId, setEditingId] = useState(null);
-  const [editValues, setEditValues] = useState({ category: "", price: "", benefits: "", ticketId: "" });
+  const [editValues, setEditValues] = useState({ category: "", price: "", benefits: "", eventId: "" });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    fakeApiRequest("load", []).then((data) => {
-      setTicketTypes(data);
-      setLoading(false);
-    });
+    loadData();
   }, []);
+
+  async function loadData() {
+    setLoading(true);
+    setError("");
+    try {
+      const [ticketData, eventData] = await Promise.all([
+        apiRequest("/api/TicketType"),
+        apiRequest("/Event/GetEvents"),
+      ]);
+      setTicketTypes(ticketData);
+
+      const eventMap = {};
+      eventData.forEach((e) => {
+        eventMap[e.eventId] = e.eventName;
+      });
+      setEvents(eventMap);
+    } catch (err) {
+      setError(err.message || "Failed to load ticket types.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function handleCreate(e) {
     e.preventDefault();
-    if (!newTicketId || !newCategory || !newPrice) return;
+    if (!newCategory || !newPrice || !newEventId) return;
 
     setCreating(true);
-    const newItem = {
-      ticketTypeId: Math.max(0, ...ticketTypes.map((t) => t.ticketTypeId)) + 1,
-      category: newCategory,
-      price: Number(newPrice),
-      benefits: newBenefits,
-      ticketId: Number(newTicketId),
-    };
-    await fakeApiRequest("create", newItem);
-    setTicketTypes((prev) => [...prev, newItem]);
-    setNewTicketId("");
-    setNewCategory("");
-    setNewPrice("");
-    setNewBenefits("");
-    setCreating(false);
+    try {
+      await apiRequest("/api/TicketType", "POST", {
+        category: newCategory,
+        price: Number(newPrice),
+        benefits: newBenefits,
+        eventId: Number(newEventId),
+      });
+      setNewCategory("");
+      setNewPrice("");
+      setNewBenefits("");
+      setNewEventId("");
+      await loadData();
+    } catch (err) {
+      alert(err.message || "Failed to create ticket type.");
+    } finally {
+      setCreating(false);
+    }
   }
 
   function startEdit(tt) {
@@ -54,148 +74,149 @@ export default function AdminTicketTypesDemo() {
     setEditValues({
       category: tt.category,
       price: tt.price,
-      benefits: tt.benefits,
-      ticketId: tt.ticketId,
+      benefits: tt.benefits || "",
+      eventId: tt.eventId,
     });
   }
 
   function cancelEdit() {
     setEditingId(null);
-    setEditValues({ category: "", price: "", benefits: "", ticketId: "" });
+    setEditValues({ category: "", price: "", benefits: "", eventId: "" });
   }
 
   async function handleSaveEdit(ticketTypeId) {
     setSaving(true);
-    await fakeApiRequest("update", editValues);
-    setTicketTypes((prev) =>
-        prev.map((tt) =>
-            tt.ticketTypeId === ticketTypeId
-                ? {
-                  ...tt,
-                  category: editValues.category,
-                  price: Number(editValues.price),
-                  benefits: editValues.benefits,
-                  ticketId: Number(editValues.ticketId),
-                }
-                : tt
-        )
-    );
-    setSaving(false);
-    cancelEdit();
+    try {
+      await apiRequest(`/api/TicketType/${ticketTypeId}`, "PUT", {
+        ticketTypeId,
+        category: editValues.category,
+        price: Number(editValues.price),
+        benefits: editValues.benefits,
+        eventId: Number(editValues.eventId),
+      });
+      await loadData();
+      cancelEdit();
+    } catch (err) {
+      alert(err.message || "Failed to update ticket type.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function handleDelete(ticketTypeId, category) {
-    if (!window.confirm(`Delete ticket type "${category}"? This cannot be undone.`)) return;
-    await fakeApiRequest("delete", { ticketTypeId });
-    setTicketTypes((prev) => prev.filter((tt) => tt.ticketTypeId !== ticketTypeId));
+    if (!confirm(`Delete ticket type "${category}"? This cannot be undone.`)) return;
+    try {
+      await apiRequest(`/api/TicketType/${ticketTypeId}`, "DELETE");
+      setTicketTypes((prev) => prev.filter((tt) => tt.ticketTypeId !== ticketTypeId));
+    } catch (err) {
+      alert(err.message || "Failed to delete ticket type.");
+    }
   }
 
-  const inputStyle = { padding: "8px 12px", borderRadius: "8px", border: "1px solid #dbe1ea" };
-  const editInputStyle = { padding: "6px", borderRadius: "6px", border: "1px solid #dbe1ea" };
-  const btnBase = { border: "none", borderRadius: "8px", padding: "6px 12px", cursor: "pointer", fontSize: "13px", fontWeight: 600 };
+  if (loading) return <div className="admin-users-container"><p>Loading ticket types...</p></div>;
 
-  if (loading) {
-    return (
-        <div style={{ padding: "32px", fontFamily: "system-ui, sans-serif" }}>
-          <p>Loading ticket types...</p>
-        </div>
-    );
-  }
+  // Group ticket types by eventId
+  const grouped = ticketTypes.reduce((acc, tt) => {
+    if (!acc[tt.eventId]) acc[tt.eventId] = [];
+    acc[tt.eventId].push(tt);
+    return acc;
+  }, {});
 
   return (
-      <div style={{ padding: "32px", fontFamily: "system-ui, sans-serif", maxWidth: "900px", margin: "0 auto" }}>
-        <h1 style={{ marginBottom: "4px" }}>Manage Ticket Types</h1>
-        <p style={{ color: "#64748b", marginTop: 0, marginBottom: "20px", fontSize: "14px" }}>
-          Demo preview — data is local and resets on refresh.
-        </p>
+    <div className="admin-users-container">
+      <h1>Manage Ticket Types</h1>
+      {error && <p className="error-text">{error}</p>}
 
-        <form onSubmit={handleCreate} style={{ display: "flex", gap: "10px", marginBottom: "24px", flexWrap: "wrap" }}>
-          <input type="number" placeholder="Ticket ID" value={newTicketId}
-                 onChange={(e) => setNewTicketId(e.target.value)} style={{ ...inputStyle, width: "110px" }} />
-          <input type="text" placeholder="Category (e.g. VIP)" value={newCategory}
-                 onChange={(e) => setNewCategory(e.target.value)} style={inputStyle} />
-          <input type="number" step="0.01" placeholder="Price" value={newPrice}
-                 onChange={(e) => setNewPrice(e.target.value)} style={{ ...inputStyle, width: "110px" }} />
-          <input type="text" placeholder="Benefits" value={newBenefits}
-                 onChange={(e) => setNewBenefits(e.target.value)} style={{ ...inputStyle, flex: 1, minWidth: "160px" }} />
-          <button type="submit" disabled={creating}
-                  style={{ ...btnBase, background: "#fde047", color: "#1e293b" }}>
-            {creating ? "Creating..." : "Create Ticket Type"}
-          </button>
-        </form>
+      <form onSubmit={handleCreate} style={{ display: "flex", gap: "10px", marginBottom: "24px", flexWrap: "wrap" }}>
+        <input type="text" placeholder="Category (e.g. VIP)" value={newCategory}
+          onChange={(e) => setNewCategory(e.target.value)}
+          style={{ padding: "8px 12px", borderRadius: "8px", border: "1px solid #dbe1ea" }} />
+        <input type="number" step="0.01" placeholder="Price" value={newPrice}
+          onChange={(e) => setNewPrice(e.target.value)}
+          style={{ padding: "8px 12px", borderRadius: "8px", border: "1px solid #dbe1ea", width: "110px" }} />
+        <input type="text" placeholder="Benefits" value={newBenefits}
+          onChange={(e) => setNewBenefits(e.target.value)}
+          style={{ padding: "8px 12px", borderRadius: "8px", border: "1px solid #dbe1ea", flex: 1, minWidth: "160px" }} />
+        <input type="number" placeholder="Event ID" value={newEventId}
+          onChange={(e) => setNewEventId(e.target.value)}
+          style={{ padding: "8px 12px", borderRadius: "8px", border: "1px solid #dbe1ea", width: "110px" }} />
+        <button type="submit" disabled={creating} className="delete-btn" style={{ background: "#fde047", color: "#1e293b" }}>
+          {creating ? "Creating..." : "Create Ticket Type"}
+        </button>
+      </form>
 
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-          <tr style={{ textAlign: "left", borderBottom: "2px solid #e2e8f0" }}>
-            <th style={{ padding: "8px" }}>ID</th>
-            <th style={{ padding: "8px" }}>Category</th>
-            <th style={{ padding: "8px" }}>Price</th>
-            <th style={{ padding: "8px" }}>Benefits</th>
-            <th style={{ padding: "8px" }}>Ticket ID</th>
-            <th style={{ padding: "8px" }}>Actions</th>
-          </tr>
-          </thead>
-          <tbody>
-          {ticketTypes.map((tt) => (
-              <tr key={tt.ticketTypeId} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                <td style={{ padding: "8px" }}>{tt.ticketTypeId}</td>
-                <td style={{ padding: "8px" }}>
-                  {editingId === tt.ticketTypeId ? (
-                      <input type="text" value={editValues.category}
-                             onChange={(e) => setEditValues((p) => ({ ...p, category: e.target.value }))}
-                             style={editInputStyle} />
-                  ) : tt.category}
-                </td>
-                <td style={{ padding: "8px" }}>
-                  {editingId === tt.ticketTypeId ? (
-                      <input type="number" step="0.01" value={editValues.price}
-                             onChange={(e) => setEditValues((p) => ({ ...p, price: e.target.value }))}
-                             style={{ ...editInputStyle, width: "90px" }} />
-                  ) : `$${tt.price}`}
-                </td>
-                <td style={{ padding: "8px" }}>
-                  {editingId === tt.ticketTypeId ? (
-                      <input type="text" value={editValues.benefits}
-                             onChange={(e) => setEditValues((p) => ({ ...p, benefits: e.target.value }))}
-                             style={editInputStyle} />
-                  ) : tt.benefits}
-                </td>
-                <td style={{ padding: "8px" }}>
-                  {editingId === tt.ticketTypeId ? (
-                      <input type="number" value={editValues.ticketId}
-                             onChange={(e) => setEditValues((p) => ({ ...p, ticketId: e.target.value }))}
-                             style={{ ...editInputStyle, width: "90px" }} />
-                  ) : tt.ticketId}
-                </td>
-                <td style={{ padding: "8px" }}>
-                  {editingId === tt.ticketTypeId ? (
-                      <div style={{ display: "flex", gap: "6px" }}>
-                        <button disabled={saving} onClick={() => handleSaveEdit(tt.ticketTypeId)}
-                                style={{ ...btnBase, background: "#dcfce7", color: "#166534" }}>
-                          {saving ? "Saving..." : "Save"}
-                        </button>
-                        <button onClick={cancelEdit}
-                                style={{ ...btnBase, background: "#e2e8f0", color: "#1e293b" }}>
-                          Cancel
-                        </button>
-                      </div>
-                  ) : (
-                      <div style={{ display: "flex", gap: "6px" }}>
-                        <button onClick={() => startEdit(tt)}
-                                style={{ ...btnBase, background: "#e0f2fe", color: "#0369a1" }}>
-                          Edit
-                        </button>
-                        <button onClick={() => handleDelete(tt.ticketTypeId, tt.category)}
-                                style={{ ...btnBase, background: "#fee2e2", color: "#991b1b" }}>
-                          Delete
-                        </button>
-                      </div>
-                  )}
-                </td>
-              </tr>
-          ))}
-          </tbody>
-        </table>
-      </div>
+      {Object.keys(grouped).length === 0 ? (
+        <p>No ticket types found.</p>
+      ) : (
+        Object.entries(grouped).map(([eventId, items]) => (
+          <div key={eventId} style={{ marginBottom: "36px" }}>
+            <h2 style={{ fontSize: "18px", color: "#1e293b", marginBottom: "12px" }}>
+              {events[eventId] || `Event #${eventId}`} <span style={{ color: "#94a3b8", fontWeight: 400 }}>(Event ID: {eventId})</span>
+            </h2>
+
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Benefits</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((tt) => (
+                  <tr key={tt.ticketTypeId}>
+                    <td>{tt.ticketTypeId}</td>
+                    <td>
+                      {editingId === tt.ticketTypeId ? (
+                        <input type="text" value={editValues.category}
+                          onChange={(e) => setEditValues((p) => ({ ...p, category: e.target.value }))}
+                          style={{ padding: "6px", borderRadius: "6px", border: "1px solid #dbe1ea" }} />
+                      ) : tt.category}
+                    </td>
+                    <td>
+                      {editingId === tt.ticketTypeId ? (
+                        <input type="number" step="0.01" value={editValues.price}
+                          onChange={(e) => setEditValues((p) => ({ ...p, price: e.target.value }))}
+                          style={{ padding: "6px", borderRadius: "6px", border: "1px solid #dbe1ea", width: "90px" }} />
+                      ) : `${tt.price} OMR`}
+                    </td>
+                    <td>
+                      {editingId === tt.ticketTypeId ? (
+                        <input type="text" value={editValues.benefits}
+                          onChange={(e) => setEditValues((p) => ({ ...p, benefits: e.target.value }))}
+                          style={{ padding: "6px", borderRadius: "6px", border: "1px solid #dbe1ea" }} />
+                      ) : (tt.benefits || "—")}
+                    </td>
+                    <td>
+                      {editingId === tt.ticketTypeId ? (
+                        <div style={{ display: "flex", gap: "6px" }}>
+                          <button disabled={saving} onClick={() => handleSaveEdit(tt.ticketTypeId)} className="delete-btn" style={{ background: "#dcfce7", color: "#166534" }}>
+                            {saving ? "Saving..." : "Save"}
+                          </button>
+                          <button onClick={cancelEdit} className="delete-btn" style={{ background: "#e2e8f0", color: "#1e293b" }}>
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <div style={{ display: "flex", gap: "6px" }}>
+                          <button onClick={() => startEdit(tt)} className="delete-btn" style={{ background: "#e0f2fe", color: "#0369a1" }}>
+                            Edit
+                          </button>
+                          <button onClick={() => handleDelete(tt.ticketTypeId, tt.category)} className="delete-btn">
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ))
+      )}
+    </div>
   );
 }

@@ -226,7 +226,7 @@ namespace Project_Solutions.Controllers
 
         // GET by user id
         [HttpGet("GetOrdersByUserId")]
-        [Authorize(Roles = Roles.Admin)]
+        [Authorize]
         public IActionResult GetOrdersByUserId(int userId)
         {
             List<Order> orders = context.Orders

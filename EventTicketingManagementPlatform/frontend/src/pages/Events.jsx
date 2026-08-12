@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiRequest } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 import "../styles/Events.css";
 
 export default function Events() {
+  const { user } = useAuth();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -55,9 +57,11 @@ export default function Events() {
           <p>Browse and manage available events</p>
         </div>
 
-        <Link to="/add-event" className="add-event-button">
-          + Add Event
-        </Link>
+        {(user?.role === "Organizer" || user?.role === "Admin") && (
+          <Link to="/add-event" className="add-event-button">
+            + Add Event
+          </Link>
+        )}
       </div>
 
       {error && <p className="error-text">{error}</p>}
@@ -86,28 +90,28 @@ export default function Events() {
               </p>
 
               <p>
-                <strong>Category ID:</strong> {event.eventCategoryId}
+                <strong>Category:</strong> {event.eventCategory?.eventCategoryName || "—"}
               </p>
 
               <p>
-                <strong>Organizer ID:</strong> {event.organizerId}
+                <strong>Organizer:</strong> {event.organizerProfile?.companyName || "—"}
               </p>
 
               <p>
-                <strong>Venue ID:</strong> {event.venueId}
+                <strong>Venue:</strong> {event.venue?.venueName || "—"}
               </p>
 
               <div className="event-actions">
-                {event.eventId && (
+                {event.eventId && (!user || user.role === "Attendee") && (
                   <Link
-                    to={`/events/${event.eventId}`}
-                    className="details-button"
+                    to={`/tickets/${event.eventId}`}
+                    className="attend-button"
                   >
-                    Details
+                    Attend Event
                   </Link>
                 )}
 
-                {event.eventId && (
+                {(user?.role === "Organizer" || user?.role === "Admin") && event.eventId && (
                   <button
                     className="delete-button"
                     onClick={() => handleDelete(event.eventId)}
