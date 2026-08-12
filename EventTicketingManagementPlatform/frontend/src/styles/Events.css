@@ -170,3 +170,28 @@
     max-width: 400px;
   }
 }
+
+/* DARK MODE */
+
+html[data-theme="dark"] .events-page {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .events-page h1 {
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .event-card {
+  background: #1e293b;
+  color: #f8fafc;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+html[data-theme="dark"] .event-content h2 {
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .event-content p {
+  color: #cbd5e1;
+}

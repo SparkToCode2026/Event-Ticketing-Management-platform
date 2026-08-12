@@ -28,10 +28,12 @@ import AdminReviews from "./pages/Admin/AdminReviews";
 import AdminPromotions from "./pages/Admin/AdminPromotions";
 import Orders from "./pages/Orders";
 import Profile from "./pages/Profile";
+import { ThemeProvider } from "./context/ThemeContext";
 import MyEvents from "./pages/MyEvents";
 
 function App() {
   return (
+    <ThemeProvider>
     <AuthProvider>
       <BrowserRouter>
         <Navbar />
@@ -69,6 +71,7 @@ function App() {
         <Chatbot />
       </BrowserRouter>
     </AuthProvider>
+    </ThemeProvider>
   );
 }
 
