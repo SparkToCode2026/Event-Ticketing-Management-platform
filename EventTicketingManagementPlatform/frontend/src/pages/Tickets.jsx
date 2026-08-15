@@ -13,6 +13,7 @@ function Tickets() {
   const [ticketTypes, setTicketTypes] = useState([])
   const [selectedType, setSelectedType] = useState(null)
   const [quantity, setQuantity] = useState(1)
+  const [promoCode, setPromoCode] = useState("")
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState("")
@@ -53,11 +54,11 @@ function Tickets() {
     setError("")
     try{
       const order = await apiRequest("/Order/AddOrder", "POST", {
-        items: [{ ticketTypeId: selectedType.ticketTypeId, quantity }]
+        items: [{ ticketTypeId: selectedType.ticketTypeId, quantity }],
+        promotionCode: promoCode.trim() || null
       })
 
       navigate(`/payment/${order.orderId}`)
-
     } catch (error) {
       setError(error.message || "Failed to create the order.")
     } finally {
@@ -114,6 +115,18 @@ function Tickets() {
                 onChange={(e) => setQuantity(Number(e.target.value))}
               />
             </div>
+
+            <div className='ticket-quantity'>
+              <label htmlFor='promoCode'>Promo Code (optional)</label>
+              <input
+                id='promoCode'
+                type='text'
+                placeholder='e.g. SPARK'
+                value={promoCode}
+                onChange={(e) => setPromoCode(e.target.value)}
+              />
+            </div>
+
             <div className='ticket-total'>
               <span>Total</span>
               <strong>{total.toFixed(2)} OMR</strong>
@@ -122,7 +135,7 @@ function Tickets() {
         )}
 
         <button className='continue-button' disabled={saving || ticketTypes.length === 0} onClick={handleContinue}>
-          {saving ? "Creating order..." : "Pay"}
+          {saving ? "Creating order..." : "Continue to Payment"}
         </button>
       </div>
     </div>

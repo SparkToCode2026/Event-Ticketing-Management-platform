@@ -7,9 +7,9 @@ export default function AdminPromotions() {
   const [error, setError] = useState("");
   const [savingId, setSavingId] = useState(null);
 
-  const [orderId, setOrderId] = useState("");
   const [promotionCode, setPromotionCode] = useState("");
   const [promotionType, setPromotionType] = useState("");
+  const [discountAmount, setDiscountAmount] = useState("");
   const [promotionStartDate, setPromotionStartDate] = useState("");
   const [promotionExpiry, setPromotionExpiry] = useState("");
 
@@ -43,22 +43,19 @@ export default function AdminPromotions() {
     setFormLoading(true);
 
     try {
-      await apiRequest(
-        `/Promotion/AddPromotion?orderId=${Number(orderId)}`,
-        "POST",
-        {
-          promotionCode,
-          promotionType,
-          promotionStartDate,
-          promotionExpiry,
-        }
-      );
+      await apiRequest("/Promotion/AddPromotion", "POST", {
+        promotionCode,
+        promotionType,
+        discountAmount: Number(discountAmount),
+        promotionStartDate,
+        promotionExpiry,
+      });
 
       setFormSuccess("Promotion added successfully!");
 
-      setOrderId("");
       setPromotionCode("");
       setPromotionType("");
+      setDiscountAmount("");
       setPromotionStartDate("");
       setPromotionExpiry("");
 
@@ -99,14 +96,9 @@ export default function AdminPromotions() {
     setSavingId(promotionId);
 
     try {
-      await apiRequest(
-        `/Promotion/DeletePromotion?id=${promotionId}`,
-        "DELETE"
-      );
+      await apiRequest(`/Promotion/DeletePromotion?id=${promotionId}`, "DELETE");
 
-      setPromotions((prev) =>
-        prev.filter((p) => p.promotionId !== promotionId)
-      );
+      setPromotions((prev) => prev.filter((p) => p.promotionId !== promotionId));
     } catch (err) {
       alert(err.message || "Failed to delete promotion.");
     } finally {
@@ -128,108 +120,79 @@ export default function AdminPromotions() {
       <div className="admin-header">
         <div>
           <h1>Manage Promotions</h1>
-          <p>
-            Manage discount codes and promotion expiry dates.
-          </p>
+          <p>Manage discount codes and promotion expiry dates. Applies to any event/order.</p>
         </div>
       </div>
 
-      {error && (
-        <p className="error-text">
-          {error}
-        </p>
-      )}
+      {error && <p className="error-text">{error}</p>}
 
       <div className="admin-form-card">
 
         <h2>Add New Promotion</h2>
 
-        {formError && (
-          <p className="error-text">
-            {formError}
-          </p>
-        )}
-
-        {formSuccess && (
-          <p className="success-text">
-            {formSuccess}
-          </p>
-        )}
+        {formError && <p className="error-text">{formError}</p>}
+        {formSuccess && <p className="success-text">{formSuccess}</p>}
 
         <form onSubmit={handleAddPromotion}>
 
           <div className="input-group">
-            <label>Order ID</label>
-
-            <input
-              type="number"
-              value={orderId}
-              onChange={(e) => setOrderId(e.target.value)}
-              placeholder="Enter order ID"
-              required
-            />
-          </div>
-
-          <div className="input-group">
             <label>Promotion Code</label>
-
             <input
               type="text"
               value={promotionCode}
               onChange={(e) => setPromotionCode(e.target.value)}
-              placeholder="e.g. SUMMER25"
+              placeholder="e.g. SPARK"
               required
             />
           </div>
 
           <div className="input-group">
             <label>Promotion Type</label>
-
             <input
               type="text"
               value={promotionType}
               onChange={(e) => setPromotionType(e.target.value)}
-              placeholder="e.g. Percentage"
+              placeholder="e.g. Fixed"
+              required
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Discount Amount (OMR)</label>
+            <input
+              type="number"
+              step="0.01"
+              value={discountAmount}
+              onChange={(e) => setDiscountAmount(e.target.value)}
+              placeholder="e.g. 5"
               required
             />
           </div>
 
           <div className="input-group">
             <label>Start Date</label>
-
             <input
               type="date"
               value={promotionStartDate}
-              onChange={(e) =>
-                setPromotionStartDate(e.target.value)
-              }
+              onChange={(e) => setPromotionStartDate(e.target.value)}
               required
             />
           </div>
 
           <div className="input-group">
             <label>Expiry Date</label>
-
             <input
               type="date"
               value={promotionExpiry}
-              onChange={(e) =>
-                setPromotionExpiry(e.target.value)
-              }
+              onChange={(e) => setPromotionExpiry(e.target.value)}
               required
             />
           </div>
 
           <div className="form-buttons">
-
-            <button
-              type="submit"
-              className="save-btn"
-              disabled={formLoading}
-            >
+            <button type="submit" className="save-btn" disabled={formLoading}>
               {formLoading ? "Adding..." : "Add Promotion"}
             </button>
-
           </div>
 
         </form>
@@ -237,92 +200,56 @@ export default function AdminPromotions() {
 
       <div className="table-container">
 
-
         {promotions.length === 0 ? (
-          <p className="empty-text">
-            No promotions found.
-          </p>
+          <p className="empty-text">No promotions found.</p>
         ) : (
           <table className="admin-table">
-
             <thead>
               <tr>
                 <th>ID</th>
                 <th>Code</th>
                 <th>Type</th>
+                <th>Discount</th>
                 <th>Start Date</th>
                 <th>Expiry</th>
-                <th>Orders</th>
+                <th>Orders Used</th>
                 <th>Action</th>
               </tr>
             </thead>
 
             <tbody>
-
               {promotions.map((promo) => (
-
                 <tr key={promo.promotionId}>
-
                   <td>{promo.promotionId}</td>
-
                   <td>{promo.promotionCode}</td>
-
                   <td>{promo.promotionType}</td>
-
+                  <td>{promo.discountAmount} OMR</td>
                   <td>
                     {promo.promotionStartDate
-                      ? new Date(
-                          promo.promotionStartDate
-                        ).toLocaleDateString()
+                      ? new Date(promo.promotionStartDate).toLocaleDateString()
                       : "-"}
                   </td>
-
                   <td>
                     <input
                       type="date"
-                      value={
-                        promo.promotionExpiry
-                          ? promo.promotionExpiry.slice(0, 10)
-                          : ""
-                      }
-                      disabled={
-                        savingId === promo.promotionId
-                      }
-                      onChange={(e) =>
-                        handleExpiryChange(
-                          promo.promotionId,
-                          e.target.value
-                        )
-                      }
+                      value={promo.promotionExpiry ? promo.promotionExpiry.slice(0, 10) : ""}
+                      disabled={savingId === promo.promotionId}
+                      onChange={(e) => handleExpiryChange(promo.promotionId, e.target.value)}
                     />
                   </td>
-
-                  <td>
-                    {promo.orders?.length ?? 0}
-                  </td>
-
+                  <td>{promo.orders?.length ?? 0}</td>
                   <td>
                     <button
                       className="delete-btn"
-                      disabled={
-                        savingId === promo.promotionId
-                      }
-                      onClick={() =>
-                        handleDelete(promo.promotionId)
-                      }
+                      disabled={savingId === promo.promotionId}
+                      onClick={() => handleDelete(promo.promotionId)}
                     >
-                      {savingId === promo.promotionId
-                        ? "..."
-                        : "Delete"}
+                      {savingId === promo.promotionId ? "..." : "Delete"}
                     </button>
                   </td>
-
                 </tr>
-
               ))}
-
             </tbody>
-
           </table>
         )}
 

@@ -17,26 +17,11 @@ namespace Project_Solutions.Controllers
         }
 
         [HttpPost("AddPromotion")]
-        [Authorize]
-        public IActionResult AddPromotion(int orderId,[FromBody]Promotion promotion)
+        [Authorize(Roles = Roles.Admin)]
+        public IActionResult AddPromotion([FromBody] Promotion promotion)
         {
-         var order = context.Orders.FirstOrDefault(o => o.OrderId == orderId);
-
-         if (order == null)
-            {
-                return NotFound("Order not found.");
-            }
-
-            if (order.PromotionId != null)
-            {
-                return BadRequest("This order already has a promotion.");
-            }
             context.Promotions.Add(promotion);
             context.SaveChanges();
-            
-            order.PromotionId = promotion.PromotionId;
-            context.SaveChanges();
-
             return Ok(promotion);
         }
 
