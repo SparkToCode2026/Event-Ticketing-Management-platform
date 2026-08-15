@@ -73,12 +73,31 @@ namespace Project_Solutions.Controllers
                 }
             }
 
+            Promotion? appliedPromotion = null;
+
+            if (!string.IsNullOrWhiteSpace(request.PromotionCode))
+            {
+                appliedPromotion = await context.Promotions.FirstOrDefaultAsync(p =>
+                    p.PromotionCode == request.PromotionCode &&
+                    p.PromotionStartDate <= DateTime.Now &&
+                    p.PromotionExpiry >= DateTime.Now);
+
+                if (appliedPromotion == null)
+                {
+                    return BadRequest("Invalid or expired promotion code.");
+                }
+
+                total -= appliedPromotion.DiscountAmount;
+                if (total < 0) total = 0;
+            }
+
             var order = new Order
             {
                 UserId = userId,   // ← from the token, not request.UserId
                 OrderDate = DateTime.Now,
                 OrderStatus = "Pending",
-                TotalAmount = total
+                TotalAmount = total,
+                PromotionId = appliedPromotion?.PromotionId
             };
 
             using var transaction = await context.Database.BeginTransactionAsync();

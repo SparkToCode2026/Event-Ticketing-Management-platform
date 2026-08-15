@@ -45,6 +45,7 @@ namespace Project_Solutions.Models
     public class OrderRequest
     {
         public List<OrderItem> Items { get; set; }   // UserId removed, but the class stays
+        public string? PromotionCode { get; set; }
     }
     public class OrderItem
     {

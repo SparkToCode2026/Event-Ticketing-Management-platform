@@ -5,12 +5,15 @@ namespace Project_Solutions.Models
     public class Promotion
     {
         [Key]
-        [JsonIgnore]
         public int PromotionId { get; set; }
         [Required, MaxLength(50)]
         public string PromotionCode { get; set; }
         [Required, MaxLength(50)]
         public string PromotionType { get; set; }
+
+        [Required]
+        public decimal DiscountAmount { get; set; }
+
         [Required]
         public DateTime PromotionStartDate { get; set; }
         [Required]

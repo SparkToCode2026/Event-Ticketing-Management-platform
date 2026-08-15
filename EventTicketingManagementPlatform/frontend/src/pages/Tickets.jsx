@@ -14,6 +14,7 @@ function Tickets() {
   const [ticketTypes, setTicketTypes] = useState([])
   const [selectedType, setSelectedType] = useState(null)
   const [quantity, setQuantity] = useState(1)
+  const [promoCode, setPromoCode] = useState("")
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState("")
@@ -61,6 +62,11 @@ function Tickets() {
 
     setSaving(true)
     setError("")
+    try{
+      const order = await apiRequest("/Order/AddOrder", "POST", {
+        items: [{ ticketTypeId: selectedType.ticketTypeId, quantity }],
+        promotionCode: promoCode.trim() || null
+      })
 
     try {
 
@@ -78,7 +84,6 @@ function Tickets() {
       )
 
       navigate(`/payment/${order.orderId}`)
-
     } catch (error) {
 
       setError(
@@ -178,6 +183,46 @@ function Tickets() {
                   {total.toFixed(2)} OMR
                 </strong>
               </div>
+              <span>{t.price} OMR</span>
+            </label>
+          ))
+        )}
+
+        {selectedType && (
+          <>
+            <div className='ticket-quantity'>
+              <label htmlFor='quantity'>Quantity</label>
+              <input
+                id='quantity'
+                type='number'
+                min="1"
+                max="10"
+                value={quantity}
+                onChange={(e) => setQuantity(Number(e.target.value))}
+              />
+            </div>
+
+            <div className='ticket-quantity'>
+              <label htmlFor='promoCode'>Promo Code (optional)</label>
+              <input
+                id='promoCode'
+                type='text'
+                placeholder='e.g. SPARK'
+                value={promoCode}
+                onChange={(e) => setPromoCode(e.target.value)}
+              />
+            </div>
+
+            <div className='ticket-total'>
+              <span>Total</span>
+              <strong>{total.toFixed(2)} OMR</strong>
+            </div>
+          </>
+        )}
+
+        <button className='continue-button' disabled={saving || ticketTypes.length === 0} onClick={handleContinue}>
+          {saving ? "Creating order..." : "Continue to Payment"}
+        </button>
             </>
           )}
 
