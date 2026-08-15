@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { apiRequest } from "../services/api";
 import { useTheme } from "../context/ThemeContext";
 import "../styles/Profile.css";
+import profile from "../assets/profile.jpg";
 
 export default function Profile() {
   const { user, setUser } = useAuth();
@@ -52,74 +53,84 @@ export default function Profile() {
   }
 
   return (
-    <div className="profile-container">
-      <h1>My Profile</h1>
+    <div
+      className="profile-page"
+      style={{ backgroundImage: `url(${profile})` }}
+    >
+      {/* Background image overlay */}
+      <div className="profile-overlay">
 
-      {message && (
-        <p className="success-text">
-          {message}
-        </p>
-      )}
+        <div className="profile-container">
+          <h1>My Profile</h1>
 
-      {error && (
-        <p className="error-text">
-          {error}
-        </p>
-      )}
+          {message && (
+            <p className="success-text">
+              {message}
+            </p>
+          )}
 
-      <form onSubmit={handleSubmit}>
-        <div className="input-group">
-          <label htmlFor="userName">Username</label>
+          {error && (
+            <p className="error-text">
+              {error}
+            </p>
+          )}
 
-          <input
-            type="text"
-            id="userName"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-            required
-          />
+          <form onSubmit={handleSubmit}>
+            <div className="input-group">
+              <label htmlFor="userName">Username</label>
+
+              <input
+                type="text"
+                id="userName"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="email">Email</label>
+
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="role">Role</label>
+
+              <input
+                type="text"
+                id="role"
+                value={user?.role || ""}
+                disabled
+              />
+            </div>
+
+            <button type="submit" disabled={saving}>
+              {saving ? "Saving..." : "Save Changes"}
+            </button>
+          </form>
+
+          <div className="appearance-section">
+            <h2>Appearance</h2>
+
+            <div className="appearance-option">
+              <span>Theme</span>
+
+              <button type="button" onClick={toggleTheme}>
+                {theme === "light"
+                  ? "🌙 Dark Mode"
+                  : "☀️ Light Mode"}
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div className="input-group">
-          <label htmlFor="email">Email</label>
-
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="input-group">
-          <label htmlFor="role">Role</label>
-
-          <input
-            type="text"
-            id="role"
-            value={user?.role || ""}
-            disabled
-          />
-        </div>
-
-        <button type="submit" disabled={saving}>
-          {saving ? "Saving..." : "Save Changes"}
-        </button>
-      </form>
-
-      <div className="appearance-section">
-        <h2>Appearance</h2>
-
-        <div className="appearance-option">
-          <span>Theme</span>
-
-          <button type="button" onClick={toggleTheme}>
-            {theme === "light"
-              ? "🌙 Dark Mode"
-              : "☀️ Light Mode"}
-          </button>
-        </div>
       </div>
     </div>
   );

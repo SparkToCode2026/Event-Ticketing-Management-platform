@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiRequest } from "../../services/api";
 import "../../styles/AdminDashboard.css";
+import adminBackground from "../../assets/ad.jpg";
 
 const sections = [
   { name: "Users", path: "/admin/users", icon: "👤", countKey: "users" },
@@ -28,27 +29,52 @@ export default function AdminDashboard() {
         const total = data.reduce((sum, r) => sum + r.count, 0);
         setUserTotal(total);
       } catch {
-        setUserTotal(null); // fails silently, card just shows no count
+        setUserTotal(null);
       }
     }
+
     loadCounts();
   }, []);
 
   return (
-    <div className="admin-dashboard">
-      <h1>Admin Panel</h1>
-      <p className="admin-subtitle">Manage all platform data</p>
+    <div
+      className="admin-dashboard"
+      style={{ backgroundImage: `url(${adminBackground})` }}
+    >
+      {/* Background image overlay */}
+      <div className="admin-overlay">
 
-      <div className="admin-grid">
-        {sections.map((s) => (
-          <Link to={s.path} className="admin-card" key={s.path}>
-            <span className="admin-icon">{s.icon}</span>
-            <span className="admin-name">{s.name}</span>
-            {s.countKey === "users" && userTotal !== null && (
-              <span className="admin-count">{userTotal} total</span>
-            )}
-          </Link>
-        ))}
+        <h1>Admin Panel</h1>
+
+        <p className="admin-subtitle">
+          Manage all platform data
+        </p>
+
+        <div className="admin-grid">
+          {sections.map((s) => (
+            <Link
+              to={s.path}
+              className="admin-card"
+              key={s.path}
+            >
+              <span className="admin-icon">
+                {s.icon}
+              </span>
+
+              <span className="admin-name">
+                {s.name}
+              </span>
+
+              {s.countKey === "users" &&
+                userTotal !== null && (
+                  <span className="admin-count">
+                    {userTotal} total
+                  </span>
+                )}
+            </Link>
+          ))}
+        </div>
+
       </div>
     </div>
   );

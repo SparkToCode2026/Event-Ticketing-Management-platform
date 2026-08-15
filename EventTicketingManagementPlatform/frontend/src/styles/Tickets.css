@@ -239,3 +239,30 @@
   margin-bottom: 12px;
   text-align: center;
 }
+
+/* =========================
+   TICKETS PAGE BACKGROUND
+========================= */
+
+/* Background image for the tickets page */
+.tickets-page {
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Dark overlay over the background image */
+.tickets-overlay {
+  min-height: 100vh;
+  padding: 50px 20px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Keep the page content above the background */
+.tickets-overlay h1,
+.ticket-card {
+  position: relative;
+  z-index: 1;
+}
