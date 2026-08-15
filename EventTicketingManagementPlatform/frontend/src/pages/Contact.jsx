@@ -1,6 +1,6 @@
-// frontend/src/pages/Contact.jsx
 import { useState } from "react";
 import "../styles/Contact.css";
+import pr from "../assets/pr.jpg";
 
 export default function Contact() {
   const [name, setName] = useState("");
@@ -17,49 +17,57 @@ export default function Contact() {
   }
 
   return (
-    <div className="contact-page">
-      <div className="contact-card">
-        <h1>Contact Us</h1>
-        <p className="contact-subtitle">
-          Have a question or need help? Send us a message and we'll get back to you.
-        </p>
+    <div
+      className="contact-page"
+      style={{ backgroundImage: `url(${pr})` }}
+    >
+      <div className="contact-overlay">
 
-        <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <label htmlFor="name">Name</label>
-            <input
-              type="text"
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
+        <div className="contact-card">
+          <h1>Contact Us</h1>
 
-          <div className="input-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
+          <p className="contact-subtitle">
+            Have a question or need help? Send us a message and we'll get back to you.
+          </p>
 
-          <div className="input-group">
-            <label htmlFor="message">Message</label>
-            <textarea
-              id="message"
-              rows="5"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              required
-            />
-          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="input-group">
+              <label htmlFor="name">Name</label>
+              <input
+                type="text"
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
 
-          <button type="submit">Send Message</button>
-        </form>
+            <div className="input-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="message">Message</label>
+              <textarea
+                id="message"
+                rows="5"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                required
+              />
+            </div>
+
+            <button type="submit">Send Message</button>
+          </form>
+        </div>
+
       </div>
     </div>
   );

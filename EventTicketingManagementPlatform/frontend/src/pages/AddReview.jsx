@@ -1,11 +1,9 @@
-
 import { useState } from "react";
 import { apiRequest } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import "../styles/AddReview.css";
 
 const RATING_OPTIONS = [1, 2, 3, 4, 5];
-
 
 export default function AddReview({ eventId, onReviewAdded }) {
   const { user } = useAuth();
@@ -27,20 +25,25 @@ export default function AddReview({ eventId, onReviewAdded }) {
     }
 
     setLoading(true);
+
     try {
       await apiRequest("/Review/AddReview", "POST", {
         rating: Number(rating),
-        comment,
+        comment: comment.trim(),
         userId: user.userId,
         eventId: Number(eventId),
+        reviewDate: new Date().toISOString(),
       });
 
       setSuccess("Thanks for your review!");
       setRating("");
       setComment("");
+
       onReviewAdded?.();
     } catch (err) {
-      setError(err.message || "Failed to submit review. Please try again.");
+      setError(
+        err.message || "Failed to submit review. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -55,6 +58,7 @@ export default function AddReview({ eventId, onReviewAdded }) {
 
       <form onSubmit={handleSubmit} className="add-review-form">
         <label htmlFor="rating">Rating</label>
+
         <select
           id="rating"
           value={rating}
@@ -62,6 +66,7 @@ export default function AddReview({ eventId, onReviewAdded }) {
           required
         >
           <option value="">Select a rating</option>
+
           {RATING_OPTIONS.map((r) => (
             <option key={r} value={r}>
               {r} {r === 1 ? "star" : "stars"}
@@ -70,6 +75,7 @@ export default function AddReview({ eventId, onReviewAdded }) {
         </select>
 
         <label htmlFor="comment">Comment</label>
+
         <textarea
           id="comment"
           value={comment}
@@ -77,6 +83,7 @@ export default function AddReview({ eventId, onReviewAdded }) {
           maxLength={500}
           rows={4}
           required
+          placeholder="Share your experience..."
         />
 
         <button type="submit" disabled={loading}>
