@@ -4,49 +4,64 @@
   box-sizing: border-box;
 }
 
-
-/* Page */
+/* =========================
+   LOGIN PAGE
+========================= */
 
 .login-container {
+  min-height: 100vh;
   width: 100%;
 
-  min-height: 85vh;
+  /* Login background image */
+  background-image: url("../assets/login.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 
   display: flex;
-
   justify-content: center;
-
   align-items: center;
 
   padding: 40px 20px;
 
-  background: linear-gradient(
-    135deg,
-    #eef2ff,
-    #fdf2f8
-  );
+  position: relative;
+}
+
+/* Dark overlay over the background */
+.login-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
 }
 
 
-/* Login Card */
+/* =========================
+   LOGIN BOX
+========================= */
 
 .login-box {
+  position: relative;
+  z-index: 1;
+
   width: 100%;
+  max-width: 550px;
 
-  max-width: 420px;
+  background: rgba(255, 255, 255, 0.96);
 
-  background: white;
-
-  padding: 40px;
+  padding: 45px;
 
   border-radius: 24px;
 
   box-shadow:
-    0 15px 40px rgba(15, 23, 42, 0.1);
+    0 20px 50px rgba(0, 0, 0, 0.25);
 }
 
 
-/* Heading */
+/* =========================
+   TITLE
+========================= */
 
 .login-box h1 {
   text-align: center;
@@ -57,7 +72,6 @@
 
   font-size: 32px;
 }
-
 
 .login-box .login-subtitle {
   text-align: center;
@@ -70,23 +84,21 @@
 }
 
 
-/* Form */
+/* =========================
+   FORM
+========================= */
 
 .login-box form {
   display: flex;
-
   flex-direction: column;
 }
-
 
 .input-group {
   display: flex;
-
   flex-direction: column;
 
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
-
 
 .input-group label {
   margin-bottom: 7px;
@@ -94,17 +106,18 @@
   color: #334155;
 
   font-size: 14px;
-
   font-weight: 600;
 }
 
 
-/* Inputs */
+/* =========================
+   INPUTS
+========================= */
 
 .login-box input {
   width: 100%;
 
-  padding: 13px 14px;
+  padding: 14px;
 
   border: 1px solid #dbe1ea;
 
@@ -112,13 +125,14 @@
 
   background: white;
 
+  color: #1e293b;
+
   font-size: 14px;
 
   outline: none;
 
   transition: 0.2s;
 }
-
 
 .login-box input:focus {
   border-color: #facc15;
@@ -128,9 +142,11 @@
 }
 
 
-/* Login Button */
+/* =========================
+   LOGIN BUTTON
+========================= */
 
-.login-box button {
+.login-box form button {
   width: 100%;
 
   margin-top: 8px;
@@ -158,8 +174,7 @@
   transition: 0.3s;
 }
 
-
-.login-box button:hover {
+.login-box form button:hover {
   background: #eab308;
 
   transform: translateY(-2px);
@@ -168,10 +183,43 @@
     0 10px 22px rgba(234, 179, 8, 0.25);
 }
 
+.login-box form button:disabled {
+  opacity: 0.6;
 
-/* Register Link */
+  cursor: not-allowed;
 
-.login-box p {
+  transform: none;
+}
+
+
+/* =========================
+   ERROR MESSAGE
+========================= */
+
+.error-text {
+  padding: 10px 12px;
+
+  margin-bottom: 18px;
+
+  border-radius: 10px;
+
+  background: #fee2e2;
+
+  border: 1px solid #fecaca;
+
+  color: #b91c1c;
+
+  font-size: 14px;
+
+  text-align: center;
+}
+
+
+/* =========================
+   REGISTER LINK
+========================= */
+
+.login-box > p {
   margin-top: 22px;
 
   text-align: center;
@@ -181,50 +229,35 @@
   font-size: 14px;
 }
 
-
 .login-box a {
-  color: #b45309;
+  color: #2563eb;
+
+  font-weight: 600;
 
   text-decoration: none;
-
-  font-weight: 700;
 }
-
 
 .login-box a:hover {
   text-decoration: underline;
 }
 
 
-/* Mobile */
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 600px) {
 
   .login-container {
-    padding: 30px 15px;
+    padding: 25px 15px;
   }
 
   .login-box {
-    padding: 28px 24px;
+    max-width: 100%;
+    padding: 30px 22px;
   }
 
   .login-box h1 {
-    font-size: 28px;
+    font-size: 27px;
   }
-
-}
-
-.error-text {
-  color: #dc2626;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 10px;
-  padding: 10px;
-  text-align: center;
-  font-size: 14px;
-  margin-bottom: 16px;
-}
-
-.login-box input {
-  color: #1e293b;
 }

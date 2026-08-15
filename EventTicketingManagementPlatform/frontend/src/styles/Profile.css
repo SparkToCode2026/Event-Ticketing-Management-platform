@@ -1,8 +1,32 @@
 /* =========================
+   PROFILE PAGE BACKGROUND
+========================= */
+
+/* Background image for the profile page */
+.profile-page {
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Dark overlay to make the profile card easier to see */
+.profile-overlay {
+  min-height: 100vh;
+  padding: 1px 20px 60px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+
+/* =========================
    PROFILE CONTAINER
 ========================= */
 
 .profile-container {
+  position: relative;
+  z-index: 1;
+
   max-width: 480px;
   margin: 60px auto;
   padding: 40px;

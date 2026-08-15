@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { apiRequest } from '../services/api'
 import "../styles/Tickets.css"
+import ticketBackground from "../assets/t.jpg"
 
 function Tickets() {
 
@@ -24,26 +25,35 @@ function Tickets() {
   async function loadTicketTypes() {
     setLoading(true)
     setError("")
+
     try {
       const data = await apiRequest("/api/TicketType")
-      const eventTypes = data.filter((t) => t.eventId === Number(id))
+      const eventTypes = data.filter(
+        (t) => t.eventId === Number(id)
+      )
+
       setTicketTypes(eventTypes)
+
     } catch (error) {
       setError(error.message || "Failed to load ticket types.")
+
     } finally {
       setLoading(false)
     }
   }
 
   async function handleContinue() {
+
     if (!user) {
       navigate("/login")
       return
     }
+
     if (!selectedType) {
       setError("Please choose a ticket type first.")
       return
     }
+
     if (quantity < 1) {
       setError("Quantity must be at least 1.")
       return
@@ -51,21 +61,38 @@ function Tickets() {
 
     setSaving(true)
     setError("")
-    try{
-      const order = await apiRequest("/Order/AddOrder", "POST", {
-        items: [{ ticketTypeId: selectedType.ticketTypeId, quantity }]
-      })
+
+    try {
+
+      const order = await apiRequest(
+        "/Order/AddOrder",
+        "POST",
+        {
+          items: [
+            {
+              ticketTypeId: selectedType.ticketTypeId,
+              quantity
+            }
+          ]
+        }
+      )
 
       navigate(`/payment/${order.orderId}`)
 
     } catch (error) {
-      setError(error.message || "Failed to create the order.")
+
+      setError(
+        error.message || "Failed to create the order."
+      )
+
     } finally {
       setSaving(false)
     }
   }
 
-  const total = selectedType ? selectedType.price * quantity : 0
+  const total = selectedType
+    ? selectedType.price * quantity
+    : 0
 
   if (loading) {
     return (
@@ -74,56 +101,101 @@ function Tickets() {
       </div>
     )
   }
+
   return (
-    <div className="tickets-page">
-      <h1>Choose Your Ticket</h1>
+    <div
+      className="tickets-page"
+      style={{ backgroundImage: `url(${ticketBackground})` }}
+    >
+      {/* Background image overlay */}
+      <div className="tickets-overlay">
 
-      <div className="ticket-card">
-        <h2>Available Ticket Types</h2>
-        {error && <p className='error-text'>{error}</p>}
-        {ticketTypes.length === 0 ? (
-          <p>No tickets are Available for this event yet.</p>
-        ) : (
-          ticketTypes.map((t) => (
-            <label className='ticket-option' key={t.ticketTypeId}>
-              <input
-                type='radio'
-                name='ticketType'
-                checked={selectedType?.ticketTypeId === t.ticketTypeId}
-                onChange={() => setSelectedType(t)}
-              />
-              <div>
-                <h3>{t.category}</h3>
-                <p>{t.benefits}</p>
+        <h1>Choose Your Ticket</h1>
+
+        <div className="ticket-card">
+
+          <h2>Available Ticket Types</h2>
+
+          {error && (
+            <p className="error-text">
+              {error}
+            </p>
+          )}
+
+          {ticketTypes.length === 0 ? (
+            <p>No tickets are Available for this event yet.</p>
+          ) : (
+            ticketTypes.map((t) => (
+              <label
+                className="ticket-option"
+                key={t.ticketTypeId}
+              >
+                <input
+                  type="radio"
+                  name="ticketType"
+                  checked={
+                    selectedType?.ticketTypeId ===
+                    t.ticketTypeId
+                  }
+                  onChange={() => setSelectedType(t)}
+                />
+
+                <div>
+                  <h3>{t.category}</h3>
+                  <p>{t.benefits}</p>
+                </div>
+
+                <span>{t.price} OMR</span>
+              </label>
+            ))
+          )}
+
+          {selectedType && (
+            <>
+              <div className="ticket-quantity">
+
+                <label htmlFor="quantity">
+                  Quantity
+                </label>
+
+                <input
+                  id="quantity"
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={quantity}
+                  onChange={(e) =>
+                    setQuantity(Number(e.target.value))
+                  }
+                />
+
               </div>
-              <span>{t.price} OMR</span>
-            </label>
-          ))
-        )}
 
-        {selectedType && (
-          <>
-            <div className='ticket-quantity'>
-              <label htmlFor='quantity'>Quantity</label>
-              <input
-                id='quantity'
-                type='number'
-                min="1"
-                max="10"
-                value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
-              />
-            </div>
-            <div className='ticket-total'>
-              <span>Total</span>
-              <strong>{total.toFixed(2)} OMR</strong>
-            </div>
-          </>
-        )}
+              <div className="ticket-total">
+                <span>Total</span>
 
-        <button className='continue-button' disabled={saving || ticketTypes.length === 0} onClick={handleContinue}>
-          {saving ? "Creating order..." : "Pay"}
-        </button>
+                <strong>
+                  {total.toFixed(2)} OMR
+                </strong>
+              </div>
+            </>
+          )}
+
+          <button
+            className="continue-button"
+            disabled={
+              saving ||
+              ticketTypes.length === 0
+            }
+            onClick={handleContinue}
+          >
+            {saving
+              ? "Creating order..."
+              : "Pay"}
+          </button>
+
+        </div>
+
       </div>
     </div>
   )

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import regesterImage from "../assets/regester.jpg";
 import "../styles/Register.css";
 
 export default function Register() {
@@ -23,49 +24,94 @@ export default function Register() {
       await register(userName, email, password);
       navigate("/");
     } catch (err) {
-      setError(err.message || "Registration failed. Please try again.");
+      setError(
+        err.message || "Registration failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="register-container">
-      <h1>Create Account</h1>
+    <div
+      className="register-container"
+      style={{ backgroundImage: `url(${regesterImage})` }}
+    >
+      <div className="register-box">
 
-      {error && <p style={{ color: "#dc2626", textAlign: "center", marginBottom: "10px" }}>{error}</p>}
+        <h1>Create Account</h1>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Username"
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <p className="register-subtitle">
+          Create your account to discover and manage events.
+        </p>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Registering..." : "Register"}
-        </button>
-      </form>
+        {error && (
+          <p className="error-text">
+            {error}
+          </p>
+        )}
 
-      <p style={{ textAlign: "center", marginTop: "15px", color: "#64748b", fontSize: "14px" }}>
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
+        <form onSubmit={handleSubmit}>
+
+          <div className="input-group">
+            <label htmlFor="userName">
+              Username
+            </label>
+
+            <input
+              type="text"
+              id="userName"
+              placeholder="Enter your username"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="input-group">
+            <label htmlFor="email">
+              Email
+            </label>
+
+            <input
+              type="email"
+              id="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="input-group">
+            <label htmlFor="password">
+              Password
+            </label>
+
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button type="submit" disabled={loading}>
+            {loading ? "Registering..." : "Register"}
+          </button>
+
+        </form>
+
+        <p className="login-text">
+          Already have an account?{" "}
+          <Link to="/login">
+            Login
+          </Link>
+        </p>
+
+      </div>
     </div>
   );
 }

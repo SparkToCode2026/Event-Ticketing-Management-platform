@@ -1,108 +1,44 @@
+/* Register background image */
 .register-container {
-  width: 400px;
-  margin: 80px auto;
-  padding: 30px;
+  min-height: 100vh;
+  width: 100%;
 
-  background: white;
+  background-image: url("../assets/regester.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 
-  border-radius: 20px;
-
-  box-shadow:
-    0 12px 30px rgba(15, 23, 42, 0.1);
-}
-
-
-.register-container h1 {
-  text-align: center;
-
-  margin-bottom: 25px;
-
-  color: #1e293b;
-}
-
-
-.register-container form {
   display: flex;
+  justify-content: center;
+  align-items: center;
 
-  flex-direction: column;
+  padding: 40px 20px;
+
+  position: relative;
 }
 
-
-.register-container input,
-.register-container select {
-  padding: 12px;
-
-  margin-bottom: 15px;
-
-  border: 1px solid #dbe1ea;
-
-  border-radius: 10px;
-
-  font-size: 16px;
-
-  background: white;
-
-  color: #334155;
+/* Dark overlay */
+.register-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
 }
 
+/* Register box */
+.register-box {
+  position: relative;
+  z-index: 1;
 
-.register-container input:focus,
-.register-container select:focus {
-  outline: none;
+  width: 100%;
+  max-width: 550px;
 
-  border-color: #facc15;
+  padding: 45px;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  border-radius: 24px;
 
   box-shadow:
-    0 0 0 3px rgba(250, 204, 21, 0.15);
-}
-
-
-.register-container button {
-  padding: 12px;
-
-  border: none;
-
-  border-radius: 10px;
-
-  background: linear-gradient(
-    135deg,
-    #fde047,
-    #facc15
-  );
-
-  color: #1e293b;
-
-  font-size: 16px;
-
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition: 0.3s;
-}
-
-
-.register-container button:hover {
-  background: #eab308;
-
-  transform: translateY(-1px);
-
-  box-shadow:
-    0 8px 18px rgba(234, 179, 8, 0.2);
-}
-
-.error-text {
-  color: #dc2626;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 10px;
-  padding: 10px;
-  text-align: center;
-  font-size: 14px;
-  margin-bottom: 15px;
-}
-
-.register-container input,
-.register-container select {
-  color: #334155;
+    0 20px 50px rgba(0, 0, 0, 0.25);
 }

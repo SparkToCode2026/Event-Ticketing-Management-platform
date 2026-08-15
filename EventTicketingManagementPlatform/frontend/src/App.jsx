@@ -30,47 +30,50 @@ import Orders from "./pages/Orders";
 import Profile from "./pages/Profile";
 import { ThemeProvider } from "./context/ThemeContext";
 import MyEvents from "./pages/MyEvents";
+import ReviewPage from "./pages/ReviewPage";
 
 function App() {
   return (
     <ThemeProvider>
-    <AuthProvider>
-      <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/events/:id" element={<EventDetails />} />
-          <Route path="/tickets/:id" element={<Tickets />} />
-          <Route path="/orders" element={<PrivateRoute><Orders></Orders></PrivateRoute>} />
-          <Route path="/payment/:orderId" element={<PrivateRoute><Payment /></PrivateRoute>} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/add-event" element={<AddEvent />} />
-          <Route path="/speakers" element={<PrivateRoute allowedRoles={["Organizer", "Admin"]}><AddSpeaker /></PrivateRoute>} />
-          <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
-          <Route path="/my-events" element={<PrivateRoute allowedRoles={["Organizer", "Admin"]}><MyEvents /></PrivateRoute>} />
+      <AuthProvider>
+        <BrowserRouter>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/events/:id" element={<EventDetails />} />
+            <Route path="/reviews/:eventId" element={<ReviewPage />} />
+            <Route path="/tickets/:id" element={<Tickets />} />
+            <Route path="/orders" element={<PrivateRoute><Orders /></PrivateRoute>} />
+            <Route path="/payment/:orderId" element={<PrivateRoute><Payment /></PrivateRoute>} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/add-event" element={<AddEvent />} />
+            <Route path="/speakers" element={<PrivateRoute allowedRoles={["Organizer", "Admin"]}><AddSpeaker /></PrivateRoute>} />
+            <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+            <Route path="/my-events" element={<PrivateRoute allowedRoles={["Organizer", "Admin"]}><MyEvents /></PrivateRoute>} />
 
-          {/* Admin routes */}
-          <Route path="/admin" element={<PrivateRoute allowedRoles={["Admin"]}><AdminDashboard /></PrivateRoute>} />
-          <Route path="/admin/users" element={<PrivateRoute allowedRoles={["Admin"]}><AdminUsers /></PrivateRoute>} />
-          <Route path="/admin/organizers" element={<PrivateRoute allowedRoles={["Admin"]}><AdminOrganizers /></PrivateRoute>} />
-          <Route path="/admin/events" element={<PrivateRoute allowedRoles={["Admin"]}><AdminEvents /></PrivateRoute>} />
-          <Route path="/admin/event-categories" element={<PrivateRoute allowedRoles={["Admin"]}><AdminEventCategories /></PrivateRoute>} />
-          <Route path="/admin/venues" element={<PrivateRoute allowedRoles={["Admin"]}><AdminVenues /></PrivateRoute>} />
-          <Route path="/admin/speakers" element={<PrivateRoute allowedRoles={["Admin"]}><AdminSpeakers /></PrivateRoute>} />
-          <Route path="/admin/ticket-types" element={<PrivateRoute allowedRoles={["Admin"]}><AdminTicketTypes /></PrivateRoute>} />
-          <Route path="/admin/tickets" element={<PrivateRoute allowedRoles={["Admin"]}><AdminTickets /></PrivateRoute>} />
-          <Route path="/admin/orders" element={<PrivateRoute allowedRoles={["Admin"]}><AdminOrders /></PrivateRoute>} />
-          <Route path="/admin/payments" element={<PrivateRoute allowedRoles={["Admin"]}><AdminPayments /></PrivateRoute>} />
-          <Route path="/admin/reviews" element={<PrivateRoute allowedRoles={["Admin"]}><AdminReviews /></PrivateRoute>} />
-          <Route path="/admin/promotions" element={<PrivateRoute allowedRoles={["Admin"]}><AdminPromotions /></PrivateRoute>} />
-        </Routes>
-        {/* Chatbot appears on all pages */}
-        <Chatbot />
-      </BrowserRouter>
-    </AuthProvider>
+            {/* Admin routes */}
+            <Route path="/admin" element={<PrivateRoute allowedRoles={["Admin"]}><AdminDashboard /></PrivateRoute>} />
+            <Route path="/admin/users" element={<PrivateRoute allowedRoles={["Admin"]}><AdminUsers /></PrivateRoute>} />
+            <Route path="/admin/organizers" element={<PrivateRoute allowedRoles={["Admin"]}><AdminOrganizers /></PrivateRoute>} />
+            <Route path="/admin/events" element={<PrivateRoute allowedRoles={["Admin"]}><AdminEvents /></PrivateRoute>} />
+            <Route path="/admin/event-categories" element={<PrivateRoute allowedRoles={["Admin"]}><AdminEventCategories /></PrivateRoute>} />
+            <Route path="/admin/venues" element={<PrivateRoute allowedRoles={["Admin"]}><AdminVenues /></PrivateRoute>} />
+            <Route path="/admin/speakers" element={<PrivateRoute allowedRoles={["Admin"]}><AdminSpeakers /></PrivateRoute>} />
+            <Route path="/admin/ticket-types" element={<PrivateRoute allowedRoles={["Admin"]}><AdminTicketTypes /></PrivateRoute>} />
+            <Route path="/admin/tickets" element={<PrivateRoute allowedRoles={["Admin"]}><AdminTickets /></PrivateRoute>} />
+            <Route path="/admin/orders" element={<PrivateRoute allowedRoles={["Admin"]}><AdminOrders /></PrivateRoute>} />
+            <Route path="/admin/payments" element={<PrivateRoute allowedRoles={["Admin"]}><AdminPayments /></PrivateRoute>} />
+            <Route path="/admin/reviews" element={<PrivateRoute allowedRoles={["Admin"]}><AdminReviews /></PrivateRoute>} />
+            <Route path="/admin/promotions" element={<PrivateRoute allowedRoles={["Admin"]}><AdminPromotions /></PrivateRoute>} />
+          </Routes>
+
+          {/* Chatbot appears on all pages */}
+          <Chatbot />
+        </BrowserRouter>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

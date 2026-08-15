@@ -1,14 +1,35 @@
 /* frontend/src/styles/Contact.css */
+
 .contact-page {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   padding: 60px 20px;
-  background: linear-gradient(135deg, #eef2ff, #fdf2f8);
+
+  /* Background image for Contact Page */
+  background-image: url("../assets/pr.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  position: relative;
 }
 
+/* Dark overlay over the background image */
+.contact-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Keep the contact card above the background overlay */
 .contact-card {
+  position: relative;
+  z-index: 1;
+
   width: 100%;
   max-width: 500px;
   background: white;
