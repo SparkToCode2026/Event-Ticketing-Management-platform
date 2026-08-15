@@ -13,6 +13,7 @@ function Orders() {
   const [openOrderId, setOpenOrderId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [cancellingId, setCancellingId] = useState(null);
 
   useEffect(() => {
     if (!user) {
@@ -68,6 +69,24 @@ function Orders() {
     }
   }
 
+  async function handleCancel(orderId) {
+    if (!window.confirm("Are you sure you want to cancel this order?")) return;
+
+    setCancellingId(orderId);
+    try {
+      await apiRequest(`/Order/CancelOrder/${orderId}`, "PATCH");
+      setOrders((prev) =>
+        prev.map((o) =>
+          o.orderId === orderId ? { ...o, orderStatus: "Cancelled" } : o
+        )
+      );
+    } catch (error) {
+      alert(error.message || "Failed to cancel the order.");
+    } finally {
+      setCancellingId(null);
+    }
+  }
+
   function statusClass(status) {
     if (status === "Confirmed") {
       return "status confirmed";
@@ -106,7 +125,7 @@ function Orders() {
         <div className="orders-list">
           {orders.map((o) => (
             <div className="order-card" key={o.orderId}>
-              
+
               <div className="order-header">
                 <div>
                   <h2>Order #{o.orderId}</h2>
@@ -148,14 +167,24 @@ function Orders() {
                 </button>
 
                 {o.orderStatus === "Pending" && (
-                  <button
-                    className="pay-btn"
-                    onClick={() =>
-                      navigate(`/payment/${o.orderId}`)
-                    }
-                  >
-                    Pay Now
-                  </button>
+                  <>
+                    <button
+                      className="pay-btn"
+                      onClick={() =>
+                        navigate(`/payment/${o.orderId}`)
+                      }
+                    >
+                      Pay Now
+                    </button>
+
+                    <button
+                      className="cancel-btn"
+                      disabled={cancellingId === o.orderId}
+                      onClick={() => handleCancel(o.orderId)}
+                    >
+                      {cancellingId === o.orderId ? "Cancelling..." : "Cancel Order"}
+                    </button>
+                  </>
                 )}
               </div>
 

@@ -191,6 +191,36 @@ namespace Project_Solutions.Controllers
             }
         }
 
+
+        [HttpPatch("CancelOrder/{id}")]
+        [Authorize]
+        public IActionResult CancelOrder(int id)
+        {
+            var order = context.Orders.FirstOrDefault(o => o.OrderId == id);
+            if (order == null)
+            {
+                return NotFound("Order not found.");
+            }
+
+            var callerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var isAdmin = User.IsInRole(Roles.Admin);
+
+            if (order.UserId != callerId && !isAdmin)
+            {
+                return Forbid();
+            }
+
+            if (order.OrderStatus != "Pending")
+            {
+                return BadRequest("Only pending orders can be cancelled.");
+            }
+
+            order.OrderStatus = "Cancelled";
+            context.SaveChanges();
+
+            return Ok("Order cancelled successfully.");
+        }
+
         // DELETE: Order/RemoveOrder
         [HttpDelete("RemoveOrder")]
         [Authorize]

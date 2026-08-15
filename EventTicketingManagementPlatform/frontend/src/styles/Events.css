@@ -95,7 +95,8 @@
 }
 
 .attend-button,
-.delete-button {
+.delete-button,
+.review-button {
   display: block;
   width: 100%;
   text-align: center;
@@ -129,6 +130,32 @@
 
 .delete-button:hover {
   background: #fecaca;
+}
+
+/* Leave a Review button — secondary/outlined so it doesn't
+   compete with the primary Attend button */
+.review-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  background: transparent;
+  color: #b45309;
+  border: 2px solid #facc15;
+}
+
+.review-button:hover {
+  background: #fffbeb;
+  border-color: #eab308;
+  transform: translateY(-2px);
+}
+
+.review-button svg,
+.review-button .star-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 /* Empty / error states */
@@ -194,4 +221,13 @@ html[data-theme="dark"] .event-content h2 {
 
 html[data-theme="dark"] .event-content p {
   color: #cbd5e1;
+}
+
+html[data-theme="dark"] .review-button {
+  color: #fde047;
+  border-color: #facc15;
+}
+
+html[data-theme="dark"] .review-button:hover {
+  background: rgba(250, 204, 21, 0.1);
 }

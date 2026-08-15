@@ -135,8 +135,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Redirect HTTP to HTTPS
-app.UseHttpsRedirection();
+// NOTE: app.UseHttpsRedirection() intentionally removed.
+// We're running locally over plain HTTP (see launchSettings.json,
+// http profile -> http://localhost:5081), and the frontend's
+// BASE_URL points at that same http URL. UseHttpsRedirection() was
+// bouncing every request (including CORS preflights) over to the
+// https port (7173) before CORS got a chance to approve them —
+// browsers refuse to follow a redirect on a preflight, which caused
+// the "Failed to fetch" / ERR_FAILED errors. If HTTPS is needed later
+// (e.g. in production), re-add it AFTER app.UseCors(...) below, and
+// make sure BASE_URL points at the https URL in that environment.
 
 // Serve static files from wwwroot/ (HTML, CSS, JS — the frontend)
 app.UseStaticFiles();

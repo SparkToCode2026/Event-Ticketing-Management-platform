@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { apiRequest } from '../services/api'
 import "../styles/Tickets.css"
-import ticketBackground from "../assets/t.jpg"
 
 function Tickets() {
 
@@ -62,14 +61,8 @@ function Tickets() {
 
     setSaving(true)
     setError("")
-    try{
-      const order = await apiRequest("/Order/AddOrder", "POST", {
-        items: [{ ticketTypeId: selectedType.ticketTypeId, quantity }],
-        promotionCode: promoCode.trim() || null
-      })
 
     try {
-
       const order = await apiRequest(
         "/Order/AddOrder",
         "POST",
@@ -79,7 +72,8 @@ function Tickets() {
               ticketTypeId: selectedType.ticketTypeId,
               quantity
             }
-          ]
+          ],
+          promotionCode: promoCode.trim() || null
         }
       )
 
@@ -108,11 +102,7 @@ function Tickets() {
   }
 
   return (
-    <div
-      className="tickets-page"
-      style={{ backgroundImage: `url(${ticketBackground})` }}
-    >
-      {/* Background image overlay */}
+    <div className="tickets-page">
       <div className="tickets-overlay">
 
         <h1>Choose Your Ticket</h1>
@@ -158,7 +148,6 @@ function Tickets() {
           {selectedType && (
             <>
               <div className="ticket-quantity">
-
                 <label htmlFor="quantity">
                   Quantity
                 </label>
@@ -173,7 +162,20 @@ function Tickets() {
                     setQuantity(Number(e.target.value))
                   }
                 />
+              </div>
 
+              <div className="ticket-quantity">
+                <label htmlFor="promoCode">
+                  Promo Code (optional)
+                </label>
+
+                <input
+                  id="promoCode"
+                  type="text"
+                  placeholder="e.g. SPARK"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                />
               </div>
 
               <div className="ticket-total">
@@ -183,46 +185,6 @@ function Tickets() {
                   {total.toFixed(2)} OMR
                 </strong>
               </div>
-              <span>{t.price} OMR</span>
-            </label>
-          ))
-        )}
-
-        {selectedType && (
-          <>
-            <div className='ticket-quantity'>
-              <label htmlFor='quantity'>Quantity</label>
-              <input
-                id='quantity'
-                type='number'
-                min="1"
-                max="10"
-                value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
-              />
-            </div>
-
-            <div className='ticket-quantity'>
-              <label htmlFor='promoCode'>Promo Code (optional)</label>
-              <input
-                id='promoCode'
-                type='text'
-                placeholder='e.g. SPARK'
-                value={promoCode}
-                onChange={(e) => setPromoCode(e.target.value)}
-              />
-            </div>
-
-            <div className='ticket-total'>
-              <span>Total</span>
-              <strong>{total.toFixed(2)} OMR</strong>
-            </div>
-          </>
-        )}
-
-        <button className='continue-button' disabled={saving || ticketTypes.length === 0} onClick={handleContinue}>
-          {saving ? "Creating order..." : "Continue to Payment"}
-        </button>
             </>
           )}
 
@@ -236,7 +198,7 @@ function Tickets() {
           >
             {saving
               ? "Creating order..."
-              : "Pay"}
+              : "Continue to Payment"}
           </button>
 
         </div>

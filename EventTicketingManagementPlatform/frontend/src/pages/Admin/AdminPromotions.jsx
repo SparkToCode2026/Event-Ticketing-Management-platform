@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { apiRequest } from "../../services/api";
+import "../../styles/AdminPromotion.css";
 
 export default function AdminPromotions() {
   const [promotions, setPromotions] = useState([]);
